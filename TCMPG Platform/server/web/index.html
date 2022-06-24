@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCM prescriptions generation platform</title>
+    <link rel="icon" href="../static/impage/head.png" type="image/x-icon">
+
+    <!-- CSS format -->
+    <link rel="stylesheet" href="../static/style.css" charset="utf-8">
+
+</head>
+
+<body>
+    <header>
+        <a href="#home" class='logo'>TCMPG Platform</a>
+        <div class='toggle' onclick="toggleMenu();">
+            <ul class="menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#PG">Prescription Generation</a></li>
+                <li><a href="#about">Introduction</a></li>
+                <li><a href="#dataset">Dataset</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="banner" id="home">
+        <div class="textBx">
+            <h2>
+                Welcome to
+                <br>
+                <span>TCMPG Platform</span>
+                <br>
+            </h2>
+            <a href="#PG" class='btn'>START</a>
+        </div>
+    </section>
+
+    <section class="PG" id="PG">
+        <div class="heading">
+            <h2>TCMPG Platform</h2>
+        </div>
+        <div class="notice">
+            <h3>Platform Instructions:</h3>
+            <h4>Page structure</h4>
+            This page mainly contains four parts:
+            <div>
+                <ol class="ol_list">
+                    <li>Platform instructions for usage;</li>
+                    <li>Symptom label selection box: you can choose symptoms according to different categories;</li>
+                    <li>Symptom input box: it can display the symptoms you input manually or selected through the symptom label selection box;</li>
+                    <li>Reference prescription display box: Calculate the symptom set you input by using the best trained model, and display the Top 10(default) herbs and the corresponding dose ratios.</li>
+                </ol>
+            </div>
+            <h4>How to use</h4>
+            You can use the platform in the following two ways:
+            <div>
+                <ol class="ol_list">
+                    <li>You can manually input symptoms set in the symptom input box, where symptoms are separated by a space;</li>
+                    <li>You can select symptoms in the symptom label selection box, and then compose your symptoms set by clicking the Add button, only one symptom label can be added at a time.</li>
+                </ol>
+            </div>
+            <h4>Buttons Introduction</h4>
+            <div>
+                <ol class="ol_list">
+                    <li>Add: Add the symptoms in the symptom label selection box to the symptom input box, and automatically display them in a standard format;</li>
+                    <li>Submit: Transfer the symptom set in the symptom input box to the backend model for calculation. After clicking submit, the waiting information will be displayed in the symptom input box;</li>
+                    <li>Example: View the standard format in the symptom input box and the corresponding results in the reference prescription display box;</li>
+                    <li>Delete: Clear the content of the symptom input box.</li>
+                </ol>
+            </div>
+            <h4>Notice</h4>
+            The error message will show in the reference prescription display box if the following situations occur.
+            <div>
+                <ol class="ol_list">
+                    <li>Symptoms are not added in the standard format in the symptom input box;</li>
+                    <li>There are some symptoms do not belong to this dataset in the symptom input box.</li>
+                </ol>
+            </div>
+
+        </div>
+        <div class="main">
+            <div class="pgselectoption">
+                <h1>Select The Symptoms</h1>
+                <select id="pgfirst" onChange="symptomChange()">
+                    <option selected="selected">Category</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                    <option>E</option>
+                    <option>F</option>
+                    <option>G</option>
+                    <option>H</option>
+                    <option>I</option>
+                    <option>J</option>
+                    <option>K</option>
+                    <option>L</option>
+                    <option>M</option>
+                    <option>N</option>
+                    <option>O</option>
+                    <option>P</option>
+                    <option>Q</option>
+                    <option>R</option>
+                    <option>S</option>
+                    <option>T</option>
+                    <option>U</option>
+                    <option>V</option>
+                    <option>W</option>
+                    <option>X</option>
+                    <option>Y</option>
+                    <option>Z</option>
+                </select>
+                <select id="pgsecond">
+                    <option>Select symptoms</option>
+                </select>
+            </div>
+            <div class="pg">
+                <div class="box1">
+                    <h1>Input The Symptoms</h1>
+                    <div class="b1">
+                        <textarea class="inputsymptom" id="input_symptom_id" cols="30" rows="10"
+                            placeholder="Input the symptoms set, separate each symptom with a space, click the example button to view the standard format and results."></textarea>
+                    </div>
+
+                    <input class="add" type="button" value="Add" onclick="addSymptoms()">
+                    <button class="submit" onclick="getherbs()">Submit</button>
+                    <input class="example" type="button" value="Example" onclick="getExample()">
+                    <input class="delete" type="button" value="Delete" onclick="getDelete()">
+
+                </div>
+
+                <div class="box2">
+                    <h1>Display The Reference Prescription</h1>
+                    <!-- <div>
+                        Select the number of herbs: 
+                        <input type="radio" class="herbcount" value="four" />Four
+                        <input type="radio" class="herbcount" value="eight" />Eight
+                        <input type="radio" class="herbcount" value="ten" />Ten
+                    </div> -->
+                    
+                    <div class="b2">
+                        <textarea class="outputherb" id="output_herb_id" cols="30" rows="10"
+                            placeholder="Based on the above symptoms set, the Top10 herbs and dose ratios will be obtained through the best trained model."></textarea>
+                    </div>
+
+                    <div class="herbcountselectoption">
+                        <span>Select the number of herbs:</span>
+                        <select id="herbcount" onChange="herbCountChange()">
+                            <option selected="selected">Number</option>
+                            <option>4</option>
+                            <option>8</option>
+                            <option>10</option>
+                        </select>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="about" id="about">
+        <div class="heading">
+            <h2>Introduction of TCMPG platfrom</h2>
+        </div>
+        <h2>Introduction</h2>
+        <div class="content">
+            TCMPG platform is a useful tool to assist doctors in diagnosis and treatment and generate effective reference prescriptions. You can firstly inout your symptoms set. Then, the input will be transferred to the back-end model to generate the reference prescription for you.
+        </div>
+        <br>
+        <h2>Structure</h2>
+        <div class="content">
+            The platform mainly includes the following five parts:
+        </div>
+        <div class="content">
+            <ol class="ol_list">
+                <li>Menu: The menu bar at the top of the web page can provide path guidance. Click "Home", "Prescription Generation", "Introduction", and "Dataset" to display different interfaces;</li>
+                <li>Home: Entering the website will display our homepage content, you can click the "Enter Platform" button to enter the "Prescription Generation" interface;</li>
+                <li>Prescription Generation: This interface is the core part of the platform. Before using this platform, you can read the platform instructions carefully, so as to better use our platform;</li>
+                <li>Introduction: Reading this interface, you can have a more comprehensive understanding of the TCMPG platform;</li>
+                <li>Dataset: This interface mainly introduces the herbs and symptoms obtained through data processing, and how we process the data.</li>
+            </ol>
+        </div>
+        <br>
+        <h2>Dataset</h2>
+        <div class="content">
+            <p>
+                Through more than a year of hard work, we have obtained 20998 prescriptions through computer and manual processing, including 1603 herbs and 2494 symptoms. These prescriptions are derived from 1459 ancient medical books, including "Sheng Ji Zong Lu", "Sheng Hui", "Pu Ji Fang" and so on.
+                <br><b>Tips: </b>For more information about datasets, click on the datasets section of the upper right menu bar.
+            </p>
+        </div>
+        <br>
+        <h2>Disclaimer</h2>
+        <div class="content">
+            <ol class="ol_list">
+                <li>TCMPG platform is provided free-of-charge in the hope that it will be useful for your research.</li>
+                <li>TCMPG platform will provides users with reference prescriptions. We bear no responsibility for the reference prescriptions recommended by our platform.</li>
+            </ol>
+        </div>
+
+    </section>
+
+    <section class="dataset" id="dataset">
+        <div class="heading">
+            <h2>Dataset</h2>
+        </div>
+        <div class="herb">
+            <div>
+                <h2>
+                    Herbs
+                </h2>
+            </div>
+            <div class='content'>
+                <p>
+                    For more than one year, we processed 84463 prescriptions by computer-aided and manual processes. Through a comprehensive analysis of prescriptions, we have found many situations, including incorrect and incomplete herbs, unidentified herbs, herbs without doses and so on. We screened out the prescriptions with the above conditions. Through multiple screenings, we initially obtained 63690 prescriptions.
+                    <br><br>Due to the numerous data processing steps, different difficulties, and time and energy factors, we finally retained 20998 prescriptions for next experiments. In total, we isolated 1603 kinds of herbs from prescriptions.
+                    <br><br>You can browse herbs from the drop-down box. The first drop-down box is the first letter of pinyin, and the corresponding herbs will show in the second drop-down box.
+                </p>
+            </div>
+            <div class="selectoption">
+                <select id="herbfirst" onChange="herb_nextChange()">
+                    <option selected="selected">Category</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                    <option>E</option>
+                    <option>F</option>
+                    <option>G</option>
+                    <option>H</option>
+                    <option>I</option>
+                    <option>J</option>
+                    <option>K</option>
+                    <option>L</option>
+                    <option>M</option>
+                    <option>N</option>
+                    <option>O</option>
+                    <option>P</option>
+                    <option>Q</option>
+                    <option>R</option>
+                    <option>S</option>
+                    <option>T</option>
+                    <option>U</option>
+                    <option>V</option>
+                    <option>W</option>
+                    <option>X</option>
+                    <option>Y</option>
+                    <option>Z</option>
+                </select>
+
+                <select id="herbsecond">
+                    <option>Corresponding Herbs</option>
+                </select>
+            </div>
+        </div>
+        <div class="symptom">
+            <div>
+                <h2>
+                    TCM Symptoms and Diseases
+                </h2>
+            </div>
+            <div class='content'>
+                <p>
+                    Next, we manually label the indication descriptions of 20998 prescriptions. However, the indication descriptions are unstructured, which cannot be directly used to build model and conduct research.
+                    <br><br>Through manually processing, we marked the unstructured indication descriptions as symptom labels. You can view the processing results through the example below.
+                    <br><br>In the process of labeling, there are some labels with similar meanings but different expressions. We represent them with a unified label. Finally, we obtained 2494 kinds of symptoms and diseases.
+                </p>
+            </div>
+            <div class="content">
+                Example:
+                <br>
+                Indication description: Postpartum pus and blood dysentery persists, intra-abdominal pain, unwillingness to eat, and gradually become weak.
+                <br>
+                Labels: Postpartum, pus and blood dysentery, abdominal pain, lack of appetite, weakness.
+            </div>
+        </div>
+    </section>
+
+    <div class="copyright">
+        <p>
+            Copyright &copy; 2022 College of Intelligence and Computing, Tianjin University All rights reserved.
+        </p>
+    </div>
+
+    <script type="text/javascript">
+        window.addEventListener('scroll', function () {
+            var header = document.querySelector('header');
+            header.classList.toggle('sticky', window.scrollY > 0);
+        })
+
+        function getEle(id) {
+            return document.getElementById(id);
+        }
+
+        function getherbs() {
+            var symptoms = document.querySelector('.b1 textarea').value;
+            // console.log(symptoms)
+            var load = symptoms + "\n\n--->The reference prescription is being generated, please wait for a while......"
+            document.getElementById('input_symptom_id').value = load;
+
+            // No ' =>> Uncaught (in promise) SyntaxError: Unexpected token r in JSON at position 0
+            symptoms = "\"" + symptoms + "\"";
+            // console.log(symptoms)
+
+            fetch(`/check/?symptoms=${symptoms}`)
+                // .then(response => JSON.parse(JSON.stringify(response)))
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result);
+                    prescription = result['prescription'];
+                    if (prescription != "") {
+                        printprescription(10);
+                        // document.getElementById('output_herb_id').value = "Reference Prescription:\n" + "   " + prescription;
+                        // document.getElementById('output_herb_id').value = values;
+                    }
+                    else {
+                        var warnings = "Sorry, the format is incorrect or the symptoms do not belong to our dataset...... \nClick on the example button to view the standard format!!!";
+                        document.getElementById('output_herb_id').value = warnings
+                    }
+                });
+        }
+
+        function addSymptoms() {
+            var symptom_object = document.getElementById("pgsecond");
+            var symptom_text = symptom_object.options[symptom_object.selectedIndex].text;
+
+            var values = document.getElementById('input_symptom_id').value;
+            if (values === "")
+                document.getElementById('input_symptom_id').value = symptom_text + " ";
+            else
+                document.getElementById('input_symptom_id').value = values + " " + symptom_text;
+        }
+
+        function getExample() {
+            var example_symptoms = "symptom1 symptom2 symptom3";
+            var example_herbs = "Reference Prescription:\n" + "herb1 dose_ratio1, herb2 dose_ratio2, herb3 dose_ratio3"
+
+            getEle('input_symptom_id').value = example_symptoms;
+            getEle('output_herb_id').value = example_herbs;
+        }
+
+        function getDelete() {
+                var content = ""
+                getEle('input_symptom_id').value = content;
+        }
+
+        function toggleMenu() {
+            var menuToggle = document.querySelector('.toggle');
+            var menu = document.querySelector('.menu');
+            menuToggle.classList.toggle('active');
+            menu.classList.toggle('active');
+        }
+
+        function makeoption(second, arr) {
+            for (var i = 0; i < arr.length; i++) {
+                second.options.add(new Option(arr[i]));
+            }
+        }
+
+        function herb_nextChange() {
+            var first = document.getElementById("herbfirst");
+            var second = document.getElementById("herbsecond");
+            second.options.length = 0;
+            switch (first.selectedIndex) {
+                case 0:
+                    makeoption(second, new Array('Corresponing Herbs'))
+                    break;
+                case 1:
+                    makeoption(second, new Array('A Wei', 'Ai Di Cha', 'Ai Zhang Ye', 'Ai Gen', 'Ai Qu', 'Ai Ye', 'An Xi Xiang', 'An Zi'));
+                    break;
+                case 2:
+                    makeoption(second, new Array('Ba Jiao Hui Xiang', 'Ba Dou', 'Ba Ji Tian', 'Ba Jiao Gen', 'Ba Qia', 'Bai Bian Dou', 'Bai Ci Yao', 'Bai Dou Kou', 'Bai Dou Mo', 'Bai e', 'Bai Fan', 'Bai Fu Ling', 'Bai Fu Zi', 'Bai Guan', 'Bai Guo', 'Bai Hao', 'Bai Hua She She Cao', 'Bai Ji Guan Hua', 'Bai Ji', 'Bai Jiang Dan', 'Bai Jie Zi', 'Bai Jin Pi', 'Bai Jing Qiu Yin', 'Bai La', 'Bai Le', 'Bai Lian Rui', 'Bai Lian', 'Bai Liang Mi', 'Bai Luo Si Ke', 'Bai Mao Gen', 'Bai Mao Hua', 'Bai Mian', 'Bai Mu', 'Bai Mu Er', 'Bai Pi', 'Bai Qian Niu', 'Bai Qian', 'Bai Sha Tang', 'Bai Sha Tang', 'Bai Shan Tu', 'Bai Shao', 'Bai Shi Ying', 'Bai Shi Zhi', 'Bai Shu', 'Bai Si', 'Bai Tan', 'Bai Tang Shuang', 'Bai Teng Pi', 'Bai Tou Weng', 'Bai Wei', 'Bai Xi', 'Bai Xian Pi', 'Bai Yan Mei', 'Bai Yang', 'Bai Yang Shu Pi', 'Bai Yao', 'Bai Yue Shi', 'Bai Yun Mu', 'Bai Zhi', 'Bai Bu', 'Bai Cao Shuang', 'Bai He', 'Bai Xue Shuang', 'Bai Gen Bai Pi', 'Bai Shu Pi', 'Bai Shu Xi Zhi', 'Bai You', 'Bai Zi Ren', 'Bai Gu Pi', 'Bai Jiang Cao', 'Ban Fu Jiu', 'Ban Mao', 'Ban Mao Chong', 'Ban Lan Gen', 'Ban Xia', 'Ban Zhi Lian', 'Bang Fen', 'Bao He', 'Bao Gu', 'Bao Mao', 'Bao Yu', 'Bao Ma Zi Pi', 'Bei Han Shui Shi', 'Bei Sha Can', 'Bi Ji', 'Bi Ba', 'Bi Cheng Qie', 'Bi Ma Zi', 'Bi Yu San', 'Bi Hu', 'Bi Qian', 'Bian Xu', 'Bian Fu', 'Bian Dou Hua', 'Biao Jiao', 'Bie Jia', 'Bie Tou', 'Bin Lang', 'Bing Pian', 'Bo Cai', 'Bo Ge Fen', 'Bu Gu Zhi', 'Bu Hui Mu', 'Bu Zha Ye')); 
+                    break;
+                case 3:
+                    makeoption(second, new Array('Cai You', 'Can Dou', 'Can Dou Hua', 'Can e', 'Can Jian', 'Can Mian Tan', 'Can Sha', 'Can Tui Zhi', 'Can Tui', 'Can Tui Zhi', 'Can Yong Jian', 'Cang Yan', 'Cang Er Cao Chong', 'Cang Er Gen', 'Cang Er Nang Chong', 'Cang Er Zi', 'Cang Long', 'Cang Shu', 'Cang Shu Pi', 'Cang Yan', 'Cao Mi', 'Cao Can', 'Cao Dou Kou', 'Cao Guo', 'Cao Wu', 'Cao Wu Ye', 'Cao Xie Jie', 'Ce Bai Ye', 'Ceng Qing', 'Cha', 'Cha Ya', 'Cha Ye', 'Cha Zi', 'Chai Hu', 'Chan', 'Chan Hua', 'Chan Tui', 'Chan Chu', 'Chan Su', 'Chan Tou', 'Chang Li Shi', 'Chang Song', 'Chang Zu Shi Dou Lan', 'Chang Shan', 'Che Ao', 'Che Qian Cao', 'Che Qian Zi', 'Chen Xiang', 'Chen Guang Pi', 'Chen Jiang You', 'Chen Pi', 'Chen Shen Qu', 'Chen Shi Hui', 'Chi Tou', 'Chi Huo Ling', 'Chi Kui Jing', 'Chi Liu Pi', 'Chi Shao', 'Chi Shi Zhi', 'Chi Tong Xie', 'Chi Xiao Dou', 'Chi Xiao Dou Hua', 'Chong Wei Zi', 'Chou Chun Shu', 'Chou Huang', 'Chou Wu Tong Ye', 'Chu Bai Pi', 'Chu Gen', 'Chu Gen Pi', 'Chu Shu Gen Pi', 'Chu Shi Zi', 'Chu Shu', 'Chu Shu Bai Pi', 'Chu Ye', 'Chuan Bei Mu', 'Chuan Cao', 'Chuan Lian Zi', 'Chuan Niu Xi', 'Chuan Wu', 'Chuan Xiao Jiao', 'Chuan Xiong', 'Chuan Shan Jia', 'Chuan Xin Lian', 'Chun Sun Jian', 'Chun Hua', 'Chun Pi', 'Chun Shu Gen Pi', 'Chun Cai', 'Ci Shi', 'Ci Shi', 'Ci Huang', 'Ci Wei Pi', 'Cong Bai', 'Cong Xu', 'Cong Zi', 'Cu')); 
+                    break;
+                case 4:
+                    makeoption(second, new Array('Da Bian Fu', 'Da Dou', 'Da Dou Huang Juan', 'Da Dou Ye', 'Da Feng Zi', 'Da Feng Zi Ren', 'Da Fu Pi', 'Da Gui Ban', 'Da Huang', 'Da Ji', 'Da Jiao', 'Da Mai', 'Da Qie Gen', 'Da Qing Gen', 'Da Qing Yan', 'Da Qing Ye', 'Da Suan', 'Da Xue Li', 'Da Xie Teng', 'Da Zao', 'Da Zhi Zhu', 'Dai Mao', 'Dai Xu Cong', 'Dan Can', 'Dan Fan', 'Dan Nan Xing', 'Dan Xing', 'Dan Zi Fan', 'Dan Cai', 'Dan Dou Chi', 'Dan Fu Zi', 'Dan Zhu Gen', 'Dan Zhu Ke', 'Dan Zhu Li', 'Dan Zhu Ye', 'Dang Gui', 'Dang Can', 'Dao Dou', 'Dao Gou Ji Zhen', 'Dao Cao', 'Di Bai', 'Di Fu Zi', 'Di Gu Pi', 'Di Huang', 'Di Huang Hua', 'Di Jiao', 'Di Jin Cao', 'Di Long', 'Di Long Fen', 'Di Yu', 'Deng Xin Cao', 'Dian Rui Xiang', 'Diao Zhao', 'Diao Jing', 'Diao Teng Gou', 'Diao Zhang Gen', 'Ding Gong Teng', 'Ding Xiang', 'Ding Xiang Shu Pi', 'Dong Nan Liu Zhi', 'Dong Qiang Shang Tu', 'Dong Yang Can', 'Dong Gua Pi', 'Dong Gua Zi', 'Dong Kui', 'Dong Kui Gen', 'Dong Qing', 'Dong Qing Ye', 'Dou Liang Xiang', 'Dou Fu', 'Du Huo', 'Du Jiao Xian', 'Du Heng', 'Du Heng', 'Du Juan Hua', 'Du Li', 'Du Ruo', 'Du Song Zi', 'Du Zhong', 'Du Yu', 'Duan Xie Liu')); 
+                    break;
+                case 5:
+                    makeoption(second, new Array('E Jiao', 'E Shu', 'E', 'E Bu Shi Cao', 'E Gao', 'E Li', 'E Mao Ling Gen Tong', 'E Zhi', 'E Shi', 'Er Cha', 'Er Yi Dai')); 
+                    break;
+                case 6:
+                    makeoption(second, new Array('Fan Nao', 'Fan Shu', 'Fan Chi Gan Mo', 'Fang Jie Shi', 'Fang Feng', 'Fang Ji', 'Fang Kui', 'Fei Lian', 'Fei Sheng', 'Fei Juan', 'Fei Zao He', 'Fei Zao Jia', 'Fei Zao Rou', 'Fei Zao Zi', 'Fei Zi', 'Fen Xin Mu', 'Fen Bi Xie', 'Fen Gan Cao', 'Feng Hua Shuang', 'Feng Yan Cao', 'Feng Zi Rou', 'Feng Shu', 'Feng Xiang Zhi', 'Feng Zhi', 'Feng Fang', 'Feng La', 'Feng Mi', 'Feng Huang Tui', 'Feng Huang Yi', 'Feng Wei Cao', 'Feng Xian Tou Gu Cao', 'Feng Yan Cao', 'Feng Yan Guo Gen', 'Fu', 'Fu Long Gan', 'Fu Zi', 'Fu Qu', 'Fu Rong Hua', 'Fu Rong Hua Ye', 'Fu Rong Ye', 'Fo Shou', 'Fu Ling', 'Fu Ling Pi', 'Fu Shen', 'Fu Hai Shi', 'Fu Ping', 'Fu Xiao Mai', 'Fu Ba', 'Fu Zi', 'Fu She', 'Fu Can', 'Fu Pen Zi', 'Fu Pen Zi Gen')); 
+                    break;
+                case 7:
+                    makeoption(second, new Array('Gan Cao', 'Gan Cao Jie', 'Gan Song', 'Gan Sui', 'Gan Zhe', 'Gan Bian Dou Ye', 'Gan Chan', 'Gan Chan Chu', 'Gan Huang Shu Kui Hua', 'Gan Jiang', 'Gan Ma Hu Jiang', 'Gan Qi', 'Gan Qie Gen', 'Gan Tao', 'Gan Tong Lv', 'Gan Wo Ju Gen', 'Gan Xi', 'Gan Yan Zhi', 'Gang Ban Gui', 'Gang Tan', 'Gao Liang Jiang', 'Gao Liang', 'Gao Liang Mi', 'Gao Ben', 'Gao Mu', 'Ge', 'Ge Fen', 'Ge Zi Dan', 'Ge Gen', 'Ge Hua', 'Ge Zhi', 'Gong Zhu Nao Zi', 'Gong Lao Mu', 'Gou Teng', 'Gou', 'Gou Bao', 'Gou Dan', 'Gou Ji', 'Gou Shen', 'Gou Gu Ye', 'Gou Ju', 'Gou Qi Miao', 'Gou Qi Ye', 'Gou Qi Zi', 'Gu Tong Qian', 'Gu Wen Qian', 'Gu Jing Cao', 'Gu Ya', 'Gu Sui Bu', 'Gu Bai Shan', 'Gu Pai Bo', 'Gua Lou', 'Gua Lou Pi', 'Gua Lou Shuang', 'Gua Lou Zi', 'Gua Wei Gen', 'Gua Zi', 'Gua Zi Jin', 'Guan Zhong', 'Guan Lu', 'Guang Yan Tiao', 'Guang Huo Xiang', 'Guang Zao', 'Gui', 'Gui Jia', 'Gui Jia Jiao', 'Gui Rou', 'Gui Jian Yu', 'Gui Jiu', 'Gui Zhen Cao', 'Gui Hua', 'Gui Ji', 'Gui Zhi', 'Gui Yu Dan', 'Guo Di Mei', 'Guo Jiao', 'Guo Shan Long', 'Ge Jie', 'Ge Ke', 'Ge Ke Fen', 'Ge Li', 'Ge Ma')); 
+                    break;
+                case 8:
+                    makeoption(second, new Array('Hai Can', 'Hai Dan', 'Hai Feng Teng', 'Hai Gou Shen', 'Hai Jin Sha', 'Hai Luo', 'Hai Ma', 'Hai Piao Xiao', 'Hai Ren Cao', 'Hai Tong Pi', 'Hai Xi Gao', 'Hai Yan', 'Hai Zao', 'Hai Zhe', 'Han Shi Mian', 'Hao Shi Hui', 'Hao Ya Mi', 'He Zi', 'He Zi Pi', 'He Huan Hua', 'He Huan Pi', 'He Shou Wu', 'He Shu Pi', 'He Geng', 'He Hua', 'He Ye', 'He Ye Di', 'He Tao Ren', 'He Shi', 'Hei Cao', 'Hei Dou', 'Hei Lv Shen', 'Hei Mu Er', 'Hei Qian', 'Hei Ta Zi Gen', 'Hei Tang', 'Hei Xi', 'Hei Xiong Zhu Yao Zi', 'Hei Zao', 'Hei Zhi Ma', 'Hei Zui Bai Ya', 'Hong Da Ji', 'Hong Dou Kou', 'Hong Fen', 'Hong Hua', 'Hong Mao Teng Gen', 'Hong Mu Xiang', 'Hong Niang Zi', 'Hong Qu', 'Hong Tang', 'Hong Nian Gu Zi', 'Hou Gu', 'Hou Po', 'Hu', 'Hu Feng', 'Hu Huang Lian', 'Hu Jiao', 'Hu Lu Ba', 'Hu Ma Ye', 'Hu Sui Zi', 'Hu Tong Lei', 'Hu Lu', 'Hu Lu Ba', 'Hu Lu Ba', 'Hu Sui Zi', 'Hu Sun Nao Gai', 'Hu Bai Pi', 'Hu Ji Sheng', 'Hu Pi', 'Hu Ye', 'Hu Dan', 'Hu Gu', 'Hu Gu Jiao', 'Hu Jing', 'Hu Tou Gu Ya Chi', 'Hu Ya', 'Hu Zhang', 'Hu Zhi', 'Hu Po', 'Hu Zi', 'Hua Jiao', 'Hua Rui Shi', 'Hua Shi', 'Hua Ju Hong', 'Hua Pi', 'Huai Bai Pi', 'Huai Hua', 'Huai Jiao', 'Huai Jiao', 'Huai Mi', 'Huai Ye', 'Huai Zhi', 'Huang Bai', 'Huang Dan', 'Huang Dou', 'Huang Fan', 'Huang Feng', 'Huang Gua', 'Huang Jing Zi', 'Huang Jing', 'Huang Lian', 'Huang Liang Mi', 'Huang Liang Mi', 'Huang Ling', 'Huang Ma', 'Huang Ming Jiao', 'Huang Nie', 'Huang Niu Jiao', 'Huang Pi', 'Huang Qi', 'Huang Qin', 'Huang Shan', 'Huang Shi Liu Fan', 'Huang Shu Kui', 'Huang Shu Kui Hua', 'Huang Si Gua', 'Huang Teng', 'Huang Tu', 'Huang Xian Zi', 'Huang Yao Zi', 'Hui', 'Hui Diao', 'Hui Gen', 'Huo Jiang', 'Huo Ma Ren')); 
+                    break;
+                case 9:
+                    makeoption(second, new Array('None'));
+                    break;
+                case 10:
+                    makeoption(second, new Array('Ji', 'Ji Bai Shi', 'Ji Chang', 'Ji Dan Bai', 'Ji Dan Ke', 'Ji Fen Bai', 'Ji Guan Hua', 'Ji Jiao Feng Ye', 'Ji Luan', 'Ji Nei Jin', 'Ji Shi Bai', 'Ji Shi Teng', 'Ji Shi Bai', 'Ji Xie Teng', 'Ji Zi Bai', 'Ji Zi Huang', 'Ji Zi Ke', 'Ji Zi Qing', 'Ji Xue Cao', 'Ji Xing Zi', 'Ji Zhen', 'Ji Li', 'Ji Cai', 'Ji Yu', 'Jia He Che', 'Jia Tu Gu', 'Jia Xiang', 'Jian Cao', 'Jian Xie Qing', 'Jian Gen Shu', 'Jiang Hou Po', 'Jiang Huang', 'Jiang Shi', 'Jiang Shui', 'Jiang Can', 'Jiang Xiang', 'Jiao Hao', 'Jie Gu Mu', 'Jie Zi', 'Jin Bo', 'Jin Deng', 'Jin Fei Cao', 'Jin Guo Lan', 'Jin Hua Cao', 'Jin Jing Shi', 'Jin Long Dan Cao', 'Jin Qian Bai Hua She', 'Jin Qian Cao', 'Jin Qiao Mai', 'Jin Si Fan', 'Jin Ya', 'Jin Yin Hua', 'Jin Ying Zi', 'Jing Hu Lu', 'Jing Mo', 'Jing Xiang Mo', 'Jing Shuang Sang Ye', 'Jing Jie', 'Jing Jie Sui', 'Jing Jie Sui Tan', 'Jing Jie Zi', 'Jing San Leng', 'Jing Mi', 'Jing Mi Gan', 'Jing Yan', 'Jing Tian', 'Jing Tian Hua', 'Jing Mian Cao', 'Jiu Jie Chang Pu', 'Jiu Li Xiang', 'Jiu Bai', 'Jiu Cai', 'Jiu Cai Gen', 'Jiu Cai Zi', 'Jiu Gen', 'Jiu Zhi', 'Jiu', 'Jiu Qu', 'Jiu Zao', 'Jiu Ye Gen', 'Jiu Bi Ying', 'Jie Geng', 'Ju Hua', 'Ju Bai', 'Ju He', 'Ju Hong', 'Ju Luo', 'Ju Ye', 'Ju Shu Pi', 'Juan Bai', 'Jue Ming Zi', 'Jue Ye')); 
+                    break;
+                case 11:
+                    makeoption(second, new Array('Kang Qing', 'Ke Pi Cao', 'Ke Teng Zi', 'Ke Dou', 'Kong Qing', 'Ku Fan', 'Ku Can', 'Ku Di Ding', 'Ku Hu Lu Zi', 'Ku Hu', 'Ku Jiu', 'Ku Lian Pi', 'Ku Lian Zi', 'Ku Zhu Ye', 'Kuan Dong Hua', 'Kui Hua Zi', 'Kun Bu', 'Kun Xian Sheng')); 
+                    break;
+                case 12:
+                    makeoption(second, new Array('La Cha', 'La Mei Hua', 'La Mi', 'Lai Fu Zi', 'Lan Cao', 'Lan Shi', 'Lan Zi', 'Lang', 'Lang Du', 'Lang Du Wu Tou', 'Lang Pa Cao', 'Lang Ya', 'Lang Dang Gen', 'Lao Cha', 'Lao Guan Cao', 'Lao Ji', 'Lao Ying Zhao', 'Lei Wan', 'Li Gu', 'Li', 'Li Mu Pi', 'Li Pi', 'Li Lu', 'Li Lu', 'Li Shi', 'Li Gen', 'Li Gen Pi', 'Li Shu Ye', 'Li Zi', 'Li Yu', 'Li Yu Lin', 'Li Yu Nao', 'Li Yu', 'Li Qing', 'Li Zhi', 'Li Zhi He', 'Li', 'Li Zi', 'Lian Qiao', 'Lian Xu Cong Bai', 'Lian', 'Lian Fang', 'Lian Xu', 'Lian Zi', 'Lian Zi Xin', 'Lian Ye Ji Nen Zhi', 'Liang Shang Chen', 'Liang Mian Zhen', 'Ling Sha', 'Ling Xiao Hua', 'Ling Xiao Ye Ji Teng', 'Ling Yang Jiao', 'Ling Ling Xiang', 'Liu Ji Nu', 'Liu Huang', 'Liu Ye', 'Liu Bai Pi', 'Liu Gen', 'Liu Shu Ji Sheng', 'Liu Xie', 'Liu Xu', 'Liu Ye', 'Liu Zhi', 'Liu Shen Qu', 'Liu Yue Xue', 'Long', 'Long Chi', 'Long Dan', 'Long Gu', 'Long Kui', 'Long Xian Xiang', 'Long Yan Rou', 'Lou Gu', 'Lou Lan Zi', 'Lou Lu', 'Lu Gen', 'Lu Hui', 'Lu Gan Shi', 'Lu Ci Fen', 'Lu', 'Lu Chi', 'Lu Gu', 'Lu Jiao', 'Lu Jiao Jiao', 'Lu Jiao Shuang', 'Lu Li', 'Lu Rong', 'Lu Ti', 'Lu Wei', 'Lu Xian Cao', 'Luo Bo', 'Luo Mo', 'Luo Si', 'Luo Shi Teng', 'Lv', 'Lv Ru', 'Lv Zhi', 'Lv Zhou Gou', 'Lv Ru', 'Lu Dou Pi', 'Lv Dou', 'Lv Dou Fen', 'Lv Qing', 'Lv Yan')); 
+                    break;
+                case 13:
+                    makeoption(second, new Array('Ma Hua', 'Ma Huang', 'Ma Huang Gen', 'Ma You', 'Ma', 'Ma Bian Cao', 'Ma Bo', 'Ma Chang Gen', 'Ma Chi', 'Ma Chi Xian', 'Ma Dou Ling', 'Ma Lian An', 'Ma Lin', 'Ma Lin Cao', 'Ma Lin Gen', 'Ma Lin Hua', 'Ma Lin Zi', 'Ma Ling Shu', 'Ma Mei Rou', 'Ma Qian Ye', 'Ma Qian Zi', 'Ma Qin Zi', 'Ma Shi', 'Ma Ti Xiang', 'Ma Tong Zhi', 'Ma Xian', 'Ma Ying Dan', 'Ma Nao', 'Mai Dong', 'Mai Fan Shi', 'Mai Fu', 'Mai Ya', 'Man Li Yu', 'Man Yu', 'Man Tuo Luo Zi', 'Man Jiao', 'Man Jing', 'Man Jing Zi', 'Man Jing Hua', 'Mang Xiao', 'Mang Cao', 'Mao Tou', 'Mao Lang', 'Mao Yan', 'Mei Shi Zi', 'Mei Yao', 'Mei Gui Hua', 'Mei Hua', 'Mei Ye', 'Meng Chong', 'Mi Hou Li', 'Mi Gu', 'Mi Jiao', 'Mi Cu', 'Mi Lun Seng', 'Mi Meng Hua', 'Mi Tuo Seng', 'Mi Tuo Seng', 'Mi Feng', 'Mi Meng Hua', 'Mian Hua He', 'Mian Hua Zi', 'Mian Fen', 'Ming Dang Can', 'Ming Ling Ke Tu', 'Mo Luo Teng', 'Mo Pan Cao', 'Mo', 'Mo Han Lian', 'Mu Ding Xiang', 'Mu Dan Pi', 'Mu Hao', 'Mu Jing Li', 'Mu Jing Zi', 'Mu Li', 'Mu Bie Zi', 'Mu Bie Zi', 'Mu Er', 'Mu Fu Rong', 'Mu Gua', 'Mu Hu Die', 'Mu Jin Hua', 'Mu Lan Pi', 'Mu Man Tou', 'Mu Mian Hua', 'Mu Tan Hui', 'Mu Tong', 'Mu Xiang', 'Mu Ying Pi', 'Mu Zei')); 
+                    break;
+                case 14:
+                    makeoption(second, new Array('Nan Gua Zi', 'Nan Sha Can', 'Nao Sha', 'Nao Yang Hua', 'Niao Luo', 'Niu', 'Niu Bang Gen', 'Niu Bang Zi', 'Niu Dan', 'Niu Dan Xing', 'Niu Huang', 'Niu Jiao Sai', 'Niu Kou Xian', 'Niu Li Zi', 'Niu Pi', 'Niu Ru', 'Niu Sui', 'Niu Xi', 'Niu Xi Rou', 'Nuo Mi', 'Nv Wan', 'Nv Wei', 'Nv Zhen Zi')); 
+                    break;
+                case 15:
+                    makeoption(second, new Array('Ou Jie'));
+                    break;
+                case 16:
+                    makeoption(second, new Array('Pai Cao', 'Pang Xie Jiao', 'Pang Da Hai', 'Pei Lan', 'Peng Sha', 'Pi Shuang', 'Pi Sha', 'Pi Pa Rou', 'Pi Pa Ye', 'Pian Jiang Huang', 'Piao Dong Dan', 'Ping Peng Cao', 'Ping Peng Gen', 'Pu Tao', 'Pu Gong Ying', 'Pu Huang')); 
+                    break;
+                case 17:
+                    makeoption(second, new Array('Qi Gu Cao', 'Qi Zi', 'Qi Dai', 'Qi Cao', 'Qi She', 'Qian Bu Feng Tu', 'Qian Jin Teng', 'Qian Jin Zi', 'Qian Li Guang', 'Qian Nian Jian', 'Qian Niu Zi', 'Qian Bai Shuang', 'Qian Dan', 'Qian Fen', 'Qian Shuang', 'Qian Hu', 'Qian Shi', 'Qian Cao', 'Qiang Huo', 'Qiang Lang', 'Qiang Lang Chong', 'Qiang Wei', 'Qiang Wei Gen', 'Qiao Mai', 'Qiao Mai Mian', 'Qie Gen', 'Qie Zi', 'Qie Zi Gen', 'Qin Jiao', 'Qin Pi', 'Qin Xiong', 'Qing Cong', 'Qing Dai', 'Qing Feng Teng', 'Qing Guo', 'Qing Hao', 'Qing Ju', 'Qing Liang Mi', 'Qing Mei', 'Qing Meng Shi', 'Qing Mu Xiang', 'Qing Niang Zi', 'Qing Pi', 'Qing Shi Zhi', 'Qing Wa', 'Qing Xiang', 'Qing Xiang Zi', 'Qing You Chi', 'Qing Yu Dan', 'Qing Fen', 'Qing Ma Zi', 'Qiu Kui', 'Qiu Li', 'Qiu Shi', 'Qiu Yin Shi', 'Qiu Gen Bai Pi', 'Qiu Yu', 'Qu Mai', 'Quan Xie', 'Quan Can', 'Que', 'Que Li Gen', 'Que Nao', 'Que Shi', 'Que Weng Nei Chong', 'Que Zhao')); 
+                    break;
+                case 18:
+                    makeoption(second, new Array('Ran She Dan', 'Rang He Gen', 'Rao Hua', 'Ren Can', 'Ren Can Xu', 'Ren Fen Hui', 'Ren Hui Chong', 'Ren Long', 'Ren Ru', 'Ren Xin Shang Fa', 'Ren Ya', 'Ren Zhi Jia', 'Ren Zhong Bai', 'Ren Zhong Huang', 'Ren Dong Teng', 'Ren Dong Zi', 'Rou Cong Rong', 'Rou Dou Kou', 'Rou Gui', 'Ru Xiang', 'Rui Ren', 'Rui Cao', 'Ruo Ye')); 
+                    break;
+                case 19:
+                    makeoption(second, new Array('San Jiao Pao', 'San Leng', 'San Nai', 'San Qi', 'San Sui Chun Ku Jiu', 'Sang Bai Pi', 'Sang Chai Hui', 'Sang Du Chong', 'Sang Er', 'Sang Gen', 'Sang Huang', 'Sang Ji Sheng', 'Sang Piao Xiao', 'Sang Zhen', 'Sang Xin Hui', 'Sang Ye', 'Sang Zhi', 'Sha Yuan Zi', 'Sha Ren', 'Shan Ci Gu', 'Shan Dou Gen', 'Shan Liu Ju', 'Shan Mai Dong', 'Shan Nai', 'Shan Tao Ren', 'Shan Xi Jiao', 'Shan Yao', 'Shan Zha', 'Shan Zha Gen', 'Shan Zhi Zhu', 'Shan Zhu Yu', 'Sha Mu', 'Sha Mu Jie', 'Shan Hu', 'Shang Lu', 'Shao Nao', 'She Chuang Zi', 'She Han', 'She Han Cao', 'She Han Shi', 'She Tou', 'She Tui', 'She Xian', 'She Gan', 'She Xiang', 'Shen Jin Cao', 'Sheng Ma', 'Sheng Jiang', 'Sheng Qi', 'Sheng Tie Luo', 'Shi Chang Pu', 'Shi Gao', 'Shi Hu', 'Shi Hu Cao', 'Shi Hui', 'Shi Hui Hua', 'Shi Jian', 'Shi Jue Ming', 'Shi Lian', 'Shi Lian Zi', 'Shi Liu', 'Shi Liu Gen Pi', 'Shi Liu Hua', 'Shi Liu Pi', 'Shi Long Rui', 'Shi Long Zi', 'Shi Nan', 'Shi Nan', 'Shi Nan Ye', 'Shi Qing', 'Shi Shou Yu Zhen Gu', 'Shi Ting Zhi', 'Shi Wei', 'Shi Xie', 'Shi Yan', 'Shi Yan Zi', 'Shi Zao', 'Shi Chang Sheng', 'Shi Yan', 'Shi Luo', 'Shi Jun Zi', 'Shi Bing', 'Shi Di', 'Shi Shuang', 'Shi Shuang Bing', 'Shu Mi', 'Shu Di Huang', 'Shu Mi', 'Shu Nian Zi', 'Shu Kui', 'Shu Kui Gen', 'Shu Kui Hua', 'Shu Kui Hua Rui', 'Shu Qi', 'Shu', 'Shu Dan', 'Shu Fu', 'Shu Qu Cao', 'Shu Wei Cao', 'Shu Nian Gen', 'Shuang Mei Rou', 'Shui Hong Hua Zi', 'Shui Jing', 'Shui Liao', 'Shui Long Gu', 'Shui Niu Jiao', 'Shui Qin', 'Shui Yang Mei', 'Shui Yin', 'Shui Zhi', 'Shui Zhong Zhi Li', 'Shui Lian', 'Shuo Diao', 'Si Gua', 'Si Gua Luo', 'Si Gua Zi', 'Si Mian', 'Si Jiao Ge Li', 'Song Bai', 'Song Hua Fen', 'Song Jie Ming Zi Mu', 'Song Luo', 'Song Luo Cha', 'Song Xiang', 'Song Ye', 'Song Zhen', 'Song Zhi', 'Song Zi Ren', 'Su He Xiang', 'Su Mu', 'Su', 'Su You', 'Su Sha', 'Su', 'Su Mi', 'Suan Jiang Cao', 'Suan Shi Liu Zhi', 'Suan Zao', 'Suan Zao Ren', 'Suo Luo Zi', 'Suo Yang')); 
+                    break;
+                case 20:
+                    makeoption(second, new Array('Ta Dan', 'Ta Gan', 'Ta Gu', 'Tai Gu', 'Tai Zi Can', 'Tan Xiang', 'Tan Pi', 'Tang Lang', 'Tao Gen', 'Tao Hua', 'Tao Jing Bai Pi', 'Tao Pi', 'Tao Ren', 'Tao Ren Ni', 'Tao Ye', 'Tao Zhi', 'Teng Huang', 'Tian Dong', 'Tian Hua Fen', 'Tian Kui Zi', 'Tian Ling Gai', 'Tian Ma', 'Tian Ming Jing', 'Tian Nan Xing', 'Tian Shan Xue Lian', 'Tian Xian Teng', 'Tian Xian Zi', 'Tian Xiong', 'Tian Zhu Huang', 'Tian Luo', 'Tian Luo Ke', 'Tian Cai', 'Tian Gua Di', 'Tie', 'Tie Fen', 'Tie Hua Fen', 'Tie Jing', 'Tie Xiu', 'Tie Xiu Mo', 'Tie Yun Fen', 'Ting Li Zi', 'Tong Cao', 'Tong Pi', 'Tong You', 'Tong Lv', 'Tong Qing', 'Tong Bian', 'Tou Fa', 'Tou Tai Nan Ru', 'Tu Bei Mu', 'Tu Bie Chong', 'Tu Di Huang', 'Tu Feng Fang', 'Tu Feng Ke', 'Tu Fu Ling', 'Tu Gua Gen', 'Tu Jing Pi', 'Tu Ma Zong', 'Tu Ma Zong', 'Tu Mu Xiang', 'Tu Niu Xi', 'Tu Tu Dong', 'Tu Pi Mao', 'Tu Si Zi', 'Tuan Rou', 'Tuo Pan', 'Tuo Zhi')); 
+                    break;
+                case 21:
+                    makeoption(second, new Array('None'));
+                    break;
+                case 22:
+                    makeoption(second, new Array('None'));
+                    break;
+                case 23:
+                    makeoption(second, new Array('Wa Leng Zi', 'Wa Song', 'Wai Tou Cai', 'Wan Dou', 'Wan Jing', 'Wan Nian Bing', 'Wan Nian Hui', 'Wang Bu Liu Xing', 'Wang Gua', 'Wang Gua Xiao', 'Wang Gua Zi', 'Wang Cao Ye', 'Wang Yue Sha', 'Wang Yue Sha', 'Wei Ling Xian', 'Wei Xian', 'Wei Zi', 'Wei Zi Ren', 'Wei Dan', 'Wei Pi', 'Wen Yin Mo', 'Wo Ju Zi', 'Wo Niu Ke', 'Wu Ji Dan Zhi', 'Wu Ji Rou', 'Wu Jin Shi', 'Wu Jiu Gen Pi', 'Wu Jiu You', 'Wu Ma Hua', 'Wu Mao Fen', 'Wu Mei', 'Wu Shao She', 'Wu She', 'Wu She Gen', 'Wu Tou Fu Zi Jian', 'Wu Yao', 'Wu Yao Ye', 'Wu Zhang Gen', 'Wu Huan Zi', 'Wu Hui Jiu', 'Wu Ming Yi', 'Wu Jing Hua', 'Wu Yi', 'Wu Zhu Yu', 'Wu Tong Zhi', 'Wu Gong', 'Wu Bei Zi', 'Wu Gu Chong', 'Wu Jia Pi', 'Wu Li Song', 'Wu Ling Zhi', 'Wu Wei Zi', 'Wu Yi Yan Cha')); 
+                    break;
+                case 24:
+                    makeoption(second, new Array('Xi Gua Pi', 'Xi Gua Shuang', 'Xi Gua Zi', 'Xi He Liu', 'Xi Hong Hua', 'Xi Jiang Shan Pian', 'Xi Qing Guo', 'Xi Yang Can', 'Xi Ming Zi', 'Xi', 'Xing', 'Xi Lin Zhi', 'Xi Qian Cao', 'Xi Xian Cao', 'Xi Ci Mo', 'Xi Gan Cao', 'Xi Mian', 'Xi Xin', 'Xia', 'Xia Huang', 'Ha Ma', 'Xia Ku Cao', 'Xian He Cao', 'Xian Mao', 'Xian Ren Zhang Cao', 'Xian Huang Yu Nao Zhong Zhen Gu', 'Xian Yuan Hua Gen', 'Xian Zi Hua Di Ding', 'Xian Ke', 'Xian Zi', 'Xian Cai', 'Xiang Chun', 'Xiang Fu', 'Xiang Jia Pi', 'Xiang Mao', 'Xiang Mo', 'Xiang Qin', 'Xiang Ru', 'Xiang Shu', 'Xiang Teng', 'Xiang Yuan', 'Xiang Zhi', 'Xiang Pi', 'Xiang Ya', 'Xiang Dou', 'Xiang Dou Ke', 'Xiang Dou Zi', 'Xiang Shi', 'Xiang Shi Ke', 'Xiao Shi', 'Xiao Shi', 'Xiao Bai Bu', 'Xiao Di Song', 'Xiao Dou Ye', 'Xiao Fen', 'Xiao Huang Mi', 'Xiao Hui Xiang', 'Xiao Ji', 'Xiao Jiao', 'Xiao Mai', 'Xiao Mai Fen', 'Xiao Mai Fu', 'Xiao Mi', 'Xiao Shan Zha', 'Xie Xi', 'Xie Bai', 'Xie Ye', 'Xie', 'Xie Huang', 'Xie Ke', 'Xie Zhao', 'Xin Yi', 'Xin Yi Ye', 'Xin Mian Hui', 'Xin Zhuan', 'Xing Ye', 'Xing Yuan Lu Luo Ti Xin', 'Xing Gan', 'Xing Ren', 'Xing Zhi', 'Xing Zi You', 'Xiong Huang', 'Xiong Zhu Du Zi', 'Xiong Zhu Gan', 'Xiong Zhu Jiao Zhao', 'Xiong Zhu Ti', 'Xiong', 'Xiong Dan', 'Xiong Zhi', 'Xu Chang Qing', 'Xu Duan', 'Xuan Cao Gen', 'Xuan Can', 'Xuan Hu Suo Zi', 'Xuan Jing Shi', 'Xuan Jing', 'Xuan Jing Shi', 'Xuan Ming Fen', 'Xuan Fu Hua', 'Xue Li', 'Xue Bai Shu', 'Xie Jie', 'Xie Yu Tan', 'Xun Huang')); 
+                    break;
+                case 25:
+                    makeoption(second, new Array('Ya Dan Zi', 'Ya Pian', 'Ya', 'Ya Dan', 'Ya Zhi Cao', 'Ya Zi', 'Ya Ma Zi', 'Yan Zhi', 'Yan Jiao', 'Yan You', 'Yan Hu Suo', 'Yuan Hua', 'Yuan Hua Gen', 'Yuan Sui', 'Yuan Sui Zi', 'Yan Nao Sha', 'Yan Cao Gen', 'Yan You', 'Yan Shu', 'Yan Shi', 'Yan Zi Mao', 'Yan', 'Yan Leng Cai', 'Yan Ni', 'Yang', 'Yang Er Ju', 'Yang Fei', 'Yang Gan', 'Yang Hong Shan', 'Yang Ji Gu', 'Yang Jiao', 'Yang Sui', 'Yang Tao Gen', 'Yang Tao Pi', 'Yang Ti', 'Yang Ti Gen', 'Yang Zhi', 'Yang Bai Bao', 'Yang Qi Shi', 'Yang Mei', 'Yang Mu', 'Yang Jin Hua', 'Ye Dang Can', 'Ye Ju Hua', 'Ye Liao Dou', 'Ye Nan Gua Dou', 'Ye Jiao Teng', 'Ye Ming Sha', 'Ye Yan', 'Yi Dian Hong', 'Yi Bei Mu', 'Yi Yu', 'Yi Tang', 'Yi Mu Cao', 'Yi Zhi', 'Yi Yi Gen', 'Yi Yi Ren', 'Yin Chen', 'Yin Yu', 'Yin Bo', 'Yin Chai Hu', 'Yin Er', 'Yin Si Cao', 'Yin Xing Ye', 'Yin You', 'Yin Zhu', 'Yin Zhu', 'Yin Yang Huo', 'Ying Li Ke', 'Ying Su', 'Ying Su Ke', 'Ying Su Zi', 'Ying Fen', 'Ying Fen Bai', 'Ying Shi Bai', 'Ying Tiao', 'Ying Zhao Hua', 'Ying Huo Chong', 'Ying Shi', 'Ying Shi Gen', 'Ying Huo Chong', 'You Fa Hui', 'You Gui', 'You He Tao', 'You Song Jie', 'You Tong Zi', 'You Yan', 'Yu Gan Zi', 'Yu', 'Yu Biao', 'Yu Jiao', 'Yu Nao Shi', 'Yu Xian Jiao', 'Yu Xing Cao', 'Yu Bai Pi', 'Yu Qian', 'Yu Shu Pi', 'Yu Zhi', 'Yu Yu Liang', 'Yu Yu Shi Liang', 'Yu Zhou Lou Lu', 'Yu', 'Yu Quan', 'Yu Zan Hua', 'Yu Zhu', 'Yu Nai', 'Yu Jin', 'Yu Li Gen', 'Yu Li Ren', 'Yu Zhi Zi', 'Yu Shi', 'Yuan Dan', 'Yuan She', 'Yuan Zhi', 'Yue Ji Hua', 'Yun Mu', 'Yun Shi', 'Yun Tai', 'Yun Tai Zi', 'Yun Xiang')); 
+                    break;
+                case 26:
+                    makeoption(second, new Array('Zao Ye', 'Zao Fan', 'Zao Jia Gen Pi', 'Zao Jia Zi', 'Zao Jia Zi', 'Zao Jiao Ci', 'Zao Jiao Huang Ren', 'Zao Jiao Ren', 'Zao Jiao Shu Gen Pi', 'Zao Xin Tu', 'Zao Zhong Huang Tu', 'Ze Lan', 'Ze Qi', 'Ze Xie', 'Zuo Mu', 'Zuo Shu Pi', 'Zha Chan', 'Zha Meng', 'Zhang Qi Shu Pi', 'Zhang Gu', 'Zhang Dan', 'Zhang Liu Tou', 'Zhang Mu', 'Zhang Nao', 'Zhang Ye', 'Zhang Ye Da Huang', 'Zhe Shi', 'Zhe Gen', 'Zhe Mu', 'Zhe Bei Mu', 'Zhe Gu Cai', 'Zhen Zhu', 'Zhen Zhu Mu', 'Zhen Bang Fen', 'Zhen Chen Ju Pi', 'Zhen Tong Lv', 'Zhen Dou Hua', 'Zhen Shan Wei', 'Zhi Ma Hua', 'Zhi Mu', 'Zhi Zi', 'Zhi Zi Pi', 'Zhi Zhu', 'Zhi Ke', 'Zhi Shi', 'Zhi Ye', 'Zhi He Shou Wu', 'Zhi Fen Cao', 'Zhi', 'Zhi Gan', 'Zhong Ru Shi', 'Zhong Lou', 'Zhong Tai Cao', 'Zhu Cun Dong', 'Zhu Sha', 'Zhu Yu', 'Zhu', 'Zhu Chang', 'Zhu Dan Fen', 'Zhu Du', 'Zhu Fang', 'Zhu Gan', 'Zhu Ji Lv', 'Zhu Ji Sui', 'Zhu Ling', 'Zhu Pi', 'Zhu Ru', 'Zhu Shen', 'Zhu Sui', 'Zhu Ti', 'Zhu Ti Jia', 'Zhu Wei', 'Zhu Xie', 'Zhu Ya Zao', 'Zhu Yao', 'Zhu Ye', 'Zhu You', 'Zhu Zang', 'Zhu Zang Tou', 'Zhu Zhi', 'Zhu Zhi Fen', 'Zhu Zhi Gao', 'Zhu Gen', 'Zhu Ru', 'Zhu Zhu Xie', 'Zhu Ma Gen', 'Zhu Ma Ye', 'Zhuang Dan Pi', 'Zhui Di Feng', 'Zhuo Mu Niao', 'Zi Lian Shu Gen', 'Zi Pu', 'Zi Ye', 'Zi Bei Chi', 'Zi Bei Tian Gui', 'Zi Bei Fu Ping Cao', 'Zi Cao', 'Zi Ding Xiang Gen', 'Zi Ge', 'Zi Gui', 'Zi He Che', 'Zi Hua Di Ding', 'Zi Jin Pi', 'Zi Jin Sha', 'Zi Jin Teng', 'Zi Jing Hua', 'Zi Jing Pi', 'Zi Jing Teng Pi', 'Zi Kou Ge Li', 'Zi Kuang', 'Zi Shi Ying', 'Zi Su Geng', 'Zi Su Ye', 'Zi Su Zi', 'Zi Tan Xiang', 'Zi Wan', 'Zi Wei Gen', 'Zi Wei Hua', 'Zi Xiao Hua', 'Zi Xue', 'Zi Yong', 'Zi Ran Tong', 'Zong Lv', 'Zong Lv Ye', 'Zui Hun Teng')); 
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function symptomChange() {
+            var first = document.getElementById("pgfirst");
+            var second = document.getElementById("pgsecond");
+            second.options.length = 0; 
+            switch (first.selectedIndex) {
+                case 0:
+                    makeoption(second, new Array('Select symptoms'))
+                    break;
+                case 1:
+                    makeoption(second, new Array('AiQi', 'AnFeng', 'AnFengXian', 'AoNao')); break;
+                case 2:
+                    makeoption(second, new Array('BaiBeng', 'BaiDai', 'BaiDianFeng', 'BaiHou', 'BaiHuFeng', 'BaiLai', 'BaiLi', 'BaiTuChuang', 'BaiYi', 'BaiYin', 'BaiZhiLi', 'BaiZhuo', 'BaiHeBing', 'BaiJieTong', 'BaiXie', 'BanChuang', 'BanChuangRuYan', 'BanZhen', 'BanChan', 'BanShenBuSui', 'BangGuangQi', 'BangGuangRe', 'BangGuangShanQi', 'BangGuangTong', 'BangGuangXu', 'BangGuangXuLeng', 'BaoBi', 'BaoGan', 'BaoJi', 'BaoLou', 'BaoLuoShang', 'BaoShuiWeiPo', 'BaoMen', 'BaoLi', 'BaoRe', 'BaoSou', 'BaoXia', 'BaoXie', 'BaoXinTong', 'BeiShang', 'BeiBoTong', 'BeiHan', 'BeiJiTong', 'BeiJu', 'BeiQiang', 'BeiTong', 'BeiYong', 'BenTun', 'BengLou', 'BengShang', 'BengZhong', 'BiChuang', 'BiGan', 'BiGan', 'BiHou', 'BiMing', 'BiNv', 'BiSai', 'BiShengXiRou', 'BiTi', 'BiTong', 'BiWeng', 'BiXie', 'BiYang', 'BiYong', 'BiYuan', 'BiZhi', 'BiZhi', 'BiSai', 'BiMan', 'BiQi', 'BiRuo', 'BiTong', 'BiZheng', 'BiZheng', 'BiTong', 'BiYong', 'BianZheng', 'BianBi', 'BianDu', 'BianJie', 'BianMi', 'BianNi', 'BianQing', 'BianShi', 'BianXie', 'BianYong', 'BianZao', 'BianZhuo', 'BiaoJu', 'BinJu', 'BuAn', 'BuChai', 'BuDeHan', 'BuDeWo', 'BuDeXi', 'BuGu', 'BuKai', 'BuMei', 'BuNengFuYang', 'BuNengQuShen', 'BuNengZhuanCe', 'BuRen', 'BuRu', 'BuShengJiRou', 'BuXingRenShi', 'BuShiRen', 'BuShi', 'BuSiRuShi', 'BuSiYinShi', 'BuSui', 'BuWenXiangChou', 'BuXiaShi', 'BuXing', 'BuYu', 'BuYu', 'BuYun')); break;
+                case 3:
+                    makeoption(second, new Array('CaoZa', 'ChaQi', 'ChanHouFeng', 'ChanHou', 'ChanHouZhuJi', 'ChanQian', 'ChanDiao', 'ChangFeng', 'ChangHan', 'ChangHua', 'ChangMing', 'ChangPi', 'ChangRe', 'ChangTan', 'ChangTong', 'ChangWeiBuHe', 'ChangWeiFengLeng', 'ChangWeiLeng', 'ChangWeiQiXu', 'ChangWeiRe', 'ChangWeiShouShi', 'ChangWeiXu', 'ChangWeiXuLeng', 'ChangWeiXuShi', 'ChangXu', 'ChangYong', 'ChangZao', 'ChangZhi', 'ChaoChu', 'ChaoRe', 'CheSuo', 'ChenNu', 'ChenHan', 'ChenKe', 'ChiLei', 'ChiNian', 'ChiNv', 'ChiBaiDaiXia', 'ChiBaiLi', 'ChiBaiZhuo', 'ChiKouChuang', 'ChiLi', 'ChiMaiChuanJing', 'ChiTong', 'ChiYouZhong', 'ChiZhong', 'ChiZhuo', 'ChiZong', 'ChongRen', 'ChongDong', 'ChongGu', 'ChongJi', 'ChongShiXiaBu', 'ChongTong', 'ChongXinTong', 'ChongYa', 'ChongYao', 'ChongZhu', 'ChouChe', 'ChouChu', 'ChuHan', 'ChuXie', 'ChuChe', 'ChuNuo', 'ChuanShi', 'ChuanShiLao', 'ChuanCu', 'ChuanCu', 'ChuanFa', 'ChuanKe', 'ChuanMan', 'ChuanMen', 'ChuanNi', 'ChuanSou', 'ChuanXi', 'Chuang', 'ChuangDou', 'ChuangDu', 'ChuangJu', 'ChuangLan', 'ChuangXuan', 'ChuangYang', 'ChuangZhen', 'ChuangZhong', 'ChuiRu', 'ChuiSi', 'ChunBai', 'ChunChuang', 'ChunGan', 'ChunHong', 'ChunJiao', 'ChunLie', 'ChunQing', 'ChunZao', 'ChunZi', 'CiFeng', 'CongGaoZhuiXia', 'CuXin', 'CunBaiChong', 'CuoDie', 'CuoKou', 'CuoChuang', 'CuoShang')); break;
+                case 4:
+                    makeoption(second, new Array('DaShou', 'DaPuNeiSun', 'DaBianBuJin', 'DaBianBuLi', 'DaBianBuShi', 'DaBianLi', 'DaBianSuanChou', 'DaChangBuTiao', 'DaChangBuLi', 'DaChangFengRe', 'DaChangShiRe', 'DaChangXieLi', 'DaChangXuLeng', 'DaChangXuMi', 'DaChangYongZhi', 'DaDu', 'DaFeng', 'DaFengJi', 'DaFengLai', 'DaHan', 'DaKe', 'DaMaFeng', 'DaRe', 'DaRen', 'DaTouWen', 'DaXu', 'DaiXia', 'DaiZhuangPaoZhen', 'DaiZhuo', 'DanDu', 'DanLiu', 'DanShi', 'DanShiDu', 'DanZhen', 'DanZhong', 'DanNve', 'DanQie', 'DanRe', 'DanXu', 'DanHanBuRe', 'DanReBuHan', 'DaoFuShang', 'DaoShang', 'DaoJie', 'DaoHan', 'DianKuang', 'DianWang', 'DianXian', 'DianZheng', 'DiaoYan', 'DieDaSunShang', 'DiePu', 'DiePu', 'DingChuang', 'DingDu', 'DingHuang', 'DingJu', 'DingZhong', 'DongChuang', 'DongLi', 'DongXie', 'Dou', 'DouChuang', 'DouChuangRuYan', 'DouDing', 'DouDu', 'DouHouYuDu', 'DouZhen', 'DuChuang', 'DuLi', 'DuQi', 'DuQiGongXin', 'DuQiGongZhu', 'DuQiShangGong', 'DuSheng', 'DuZhong', 'DuDaQingJin', 'DuTeng', 'DuYong', 'DuRu', 'DuanQi', 'DuiKou', 'DunPu', 'DunSou', 'DunShi', 'DuoChen', 'DuoChi', 'DuoHan', 'DuoJing', 'DuoJuan', 'DuoKun', 'DuoLei', 'DuoMeng', 'DuoNu', 'DuoTi', 'DuoTi', 'DuoTuo', 'DuoTai')); break;
+                case 5:
+                    makeoption(second, new Array('eKouChuang', 'eZhangFeng', 'eNi', 'eChuang', 'eCi', 'eDu', 'eFeng', 'eHe', 'eLouBuJin', 'eQi', 'eRe', 'eRou', 'eShi', 'eWenRenSheng', 'eWenShiQi', 'eWu', 'eXin', 'eXie', 'eXieGongXin', 'eXieShangGong', 'eZhong', 'eZhu', 'eZu', 'ErZhenTong', 'ErChuang', 'ErLong', 'ErMing', 'ErNong', 'ErTong', 'ErZhong', 'ErZhong')); break;
+                case 6:
+                    makeoption(second, new Array('FaBan', 'FaBei', 'FaChuan', 'FaHan', 'FaHuang', 'FaJing', 'FaJue', 'FaKuang', 'FaNao', 'FaRe', 'FaRu', 'FaSha', 'FaShao', 'FaYang', 'FaYi', 'FaZhong', 'FanChuan', 'FanJi', 'FanJuan', 'FanKe', 'FanLuan', 'FanMan', 'FanMen', 'FanOu', 'FanRe', 'FanZao', 'FanZheng', 'FanWei', 'FangLao', 'FeiChenMiMu', 'FeiShi', 'FeiChuang', 'FeiBi', 'FeiBing', 'FeiChuan', 'FeiFeng', 'FeiGan', 'FeiGanHanXie', 'FeiHan', 'FeiHuo', 'FeiJi', 'FeiJu', 'FeiLao', 'FeiLeng', 'FeiNve', 'FeiPo', 'FeiQi', 'FeiQiBuHe', 'FeiQiBuLi', 'FeiQiBuShun', 'FeiQiXu', 'FeiRe', 'FeiShi', 'FeiSun', 'FeiWei', 'FeiWeiBuHe', 'FeiWeiLeng', 'FeiWeiRe', 'FeiWeiXuHan', 'FeiXiao', 'FeiXu', 'FeiXuHan', 'FeiYan', 'FeiYinXu', 'FeiYong', 'FeiYong', 'FeiZang', 'FeiZangYongSai', 'FeiZao', 'FeiZhang', 'FeiZhongFeng', 'FenCi', 'FengBi', 'FengBuRen', 'FengChi', 'FengChiYan', 'FengChong', 'FengChuang', 'FengCi', 'FengDu', 'FengDuChuang', 'FengDuGongYan', 'FengDuGongZhu', 'FengDuLiuZhu', 'FengDuShangGong', 'FengDuZhong', 'FengFei', 'FengGan', 'FengGong', 'FengHan', 'FengHuo', 'FengJi', 'FengJie', 'FengJing', 'FengKuang', 'FengLai', 'FengLao', 'FengLei', 'FengLeng', 'FengLengBi', 'FengLong', 'FengMi', 'FengQi', 'FengQiBuShun', 'FengQiGongZhu', 'FengQiShangGong', 'FengQiTong', 'FengRe', 'FengReShangGong', 'FengReYan', 'FengSao', 'FengShi', 'FengShi', 'FengShiBi', 'FengShui', 'FengSun', 'FengTan', 'FengTong', 'FengTouTong', 'FengTouXuan', 'FengWen', 'FengXian', 'FengXian', 'FengXie', 'FengXieShangGong', 'FengXu', 'FengXuan', 'FengXuan', 'FengYa', 'FengYan', 'FengYang', 'FengYinZhen', 'FengYong', 'FengZhen', 'FengZheng', 'FengZhong', 'FengZhong', 'FengZhu', 'FengZhu', 'FuYi', 'FuLiang', 'FuLiangQi', 'FuRe', 'FuShu', 'FuYi', 'FuZhong', 'FuNv', 'FuGuJu', 'FuGuYong', 'FuLeng', 'FuMan', 'FuMing', 'FuNeiJuJi', 'FuNeiZhuChong', 'FuRe', 'FuTong', 'FuXieTong', 'FuXieZhangMan', 'FuXie', 'FuYong', 'FuZhang', 'FuZhongJieKuai', 'FuZhongXuanPi', 'FuZhongYuXie', 'FuZhong')); break;
+                case 7:
+                    makeoption(second, new Array('GanBi', 'GanBing', 'GanFeng', 'GanGan', 'GanKe', 'GanHuo', 'GanJi', 'GanJingFengRe', 'GanLao', 'GanLaoRe', 'GanNve', 'GanQi', 'GanQiNi', 'GanQiXu', 'GanRe', 'GanShenFengXu', 'GanShenQiXu', 'GanShenXu', 'GanShenXuRe', 'GanWeiBuHe', 'GanXinTong', 'GanXu', 'GanXieXu', 'GanYu', 'GanZangFengDu', 'GanZangXuHan', 'GanZhongFeng', 'Gan', 'GanChong', 'GanChuang', 'GanHui', 'GanJi', 'GanKe', 'GanLao', 'GanLi', 'GanQi', 'GanRe', 'GanShou', 'GanXie', 'GanZheng', 'GanFeng', 'GanHan', 'GanMao', 'GanGan', 'GanKe', 'GanYue', 'GanHuoLuan', 'GanJiaoQi', 'GanOu', 'GanShiXuan', 'GanShou', 'GanSou', 'GanXieLao', 'GanXieQi', 'GangTong', 'GaoFeng', 'GaoLin', 'KaXie', 'GeQi', 'GeRe', 'GeShangYouHan', 'GeTan', 'Geng', 'GongZhu', 'GouYao', 'GuDan', 'GuLao', 'GuBi', 'GuJi', 'GuJieTong', 'GuJu', 'GuRe', 'GuRouTong', 'GuSuiTong', 'GuSuiXuBei', 'GuTong', 'GuWei', 'GuZhe', 'GuZheng', 'GuZhengLao', 'GuZhengLaoRe', 'GuZhengRe', 'GuBing', 'GuDu', 'GuLi', 'GuQi', 'GuZhang', 'GuZhang', 'GuZhang', 'GuJi', 'GuLeng', 'GuanGe', 'GuanGeBuTong', 'GuanJieBuLi', 'GuanJieTong', 'GuanXinBing', 'GuiBei', 'GuiNve', 'GuiTai', 'GuiZhu', 'GuoChuang')); break;
+                case 8:
+                    makeoption(second, new Array('HanBi', 'HanChuan', 'HanDuoReShao', 'HanLi', 'HanNve', 'HanPi', 'HanQi', 'HanRe', 'HanReNve', 'HanReRuNve', 'HanReWangLai', 'HanShan', 'HanShaoReDuo', 'HanShi', 'HanShiJiaoQi', 'HanShiQi', 'HanShiShanQi', 'HanShi', 'HanSou', 'HanTan', 'HanXie', 'HanYi', 'HanYong', 'HanZhan', 'HanBuJie', 'HanChu', 'HanHou', 'HanXie', 'HeQian', 'HeXiFeng', 'HeiFengNeiZhang', 'HengShengDaoChan', 'HongZhong', 'HouChuan', 'HouBi', 'HouBi', 'HouChuang', 'Houe', 'HouFeng', 'HouGan', 'HouSha', 'HouXuan', 'HouYan', 'HouYang', 'HouYong', 'HouZheng', 'HouZhongYouSheng', 'HouZhong', 'HuXiBuLi', 'HuHuo', 'HuaJing', 'HuaLi', 'HuaTai', 'HuaXie', 'HuaYi', 'HuanFeng', 'HuanJu', 'HuanRuo', 'HuangBing', 'HuangDan', 'HuangPang', 'HuangShou', 'HuangShui', 'HuangShuiChuang', 'HuangZhong', 'HuangHu', 'HuiChong', 'HuiJue', 'YueNi', 'HuiNu', 'HunChen', 'HunDao', 'HunJuan', 'HunKui', 'HunKun', 'HunLuan', 'HunMao', 'HunMen', 'HunMi', 'HunSai', 'HunSe', 'HunShui', 'HunXuan', 'HunYun', 'HuoBanChuang', 'HuoBing', 'HuoDan', 'HuoDong', 'HuoDu', 'HuoRe', 'HuoShang', 'HuoSheng', 'HuoWang', 'HuoYaTong', 'HuoYan', 'HuoYu', 'HuoLuan')); break;
+                case 9:
+                    makeoption(second, new Array('None'));
+                    break;
+                case 10:
+                    makeoption(second, new Array('JiRe', 'JiRouRunDong', 'JiRouWanBi', 'JiShou', 'JiMang', 'JiXiong', 'JiDu', 'JiHan', 'JiJu', 'JiJuQi', 'JiLi', 'JiRe', 'JiZhi', 'JiFeng', 'JiGan', 'JiHouBi', 'JiHouBi', 'JiHuang', 'JiJingFeng', 'JiLao', 'JiReJingFeng', 'JiTong', 'JiZao', 'JiZhongFeng', 'JiQiang', 'JiaJing', 'JiaLao', 'JiaNaoFeng', 'JiaChi', 'JiaZhong', 'JiaJu', 'JianRiNve', 'JianBeiJuJi', 'JianBeiTong', 'JianBeiYongMen', 'JianJiaGao', 'JianXi', 'JianChiLan', 'JianShengFengSu', 'JianWang', 'JiaoGongFanZhang', 'JiaoChangSha', 'JiaoBi', 'JiaoLeng', 'JiaoQi', 'JiaoQiGongXin', 'JiaoQiShangChong', 'JiaoRuan', 'JiaoRuo', 'JiaoTong', 'JiaoXiFuZhong', 'JiaoXiHuanRuo', 'JiaoXiMaBi', 'JiaoXiRuanRuo', 'JiaoXiShaoLi', 'JiaoXiSuanRuan', 'JiaoXiTong', 'JiaoXiWuLi', 'JiaoXiZhongMan', 'JiaoXi', 'JiaoZhong', 'JieChuang', 'JieDu', 'JieZhong', 'JieNve', 'JieDu', 'JieHe', 'JieSeBuTong', 'JieXiong', 'JieYin', 'JieYing', 'JieZhong', 'JieLu', 'Jie', 'JieChuang', 'JieLai', 'JieXuan', 'JinChuang', 'JinShiDu', 'JinYeBuTong', 'JinYeKuZao', 'JinYeShao', 'JinGuJuJi', 'JinGuJuLuan', 'JinGuTong', 'JinGuWeiRuo', 'JinGuWuLi', 'JinJi', 'JinLuan', 'JinMaiBuLi', 'JinMaiChouChe', 'JinMaiHuanJi', 'JinMaiHuanRuo', 'JinMaiJuJi', 'JinMaiTong', 'JinShang', 'JinYin', 'JinYinChuang', 'JinKouLi', 'JingZhongTong', 'JingBi', 'JingLou', 'JingLuoBuLi', 'JingQiFuTong', 'JingXieWangXing', 'JingChe', 'JingChu', 'JingFeng', 'JingGan', 'JingJi', 'JingJi', 'JingJi', 'JingKong', 'JingKuang', 'JingQi', 'JingRe', 'JingTan', 'JingTi', 'JingTi', 'JingTu', 'JingXian', 'JingXie', 'JingXu', 'JingZheng', 'JingTong', 'JingHan', 'JingHua', 'JingJie', 'JingLeng', 'JingQiBuGu', 'JingQiXu', 'JingShao', 'JingShenBuShou', 'JingShenBuShuang', 'JingShenDuanShao', 'JingShenShuaiRuo', 'JingShuai', 'JingTuo', 'JingXie', 'JingXieXu', 'JingJu', 'JingJue', 'JiuQiaoChuXie', 'JiuLeng', 'JiuSou', 'JiuXie', 'JiuXie', 'JiuXu', 'JiuChuang', 'JiuBing', 'JiuDan', 'JiuDu', 'JiuJi', 'JiuLi', 'JiuPi', 'JiuSeGuoDu', 'JiuShang', 'JiuShi', 'JiuZha', 'JiuZhaBi', 'JiuZhi', 'JuJi', 'JuLuan', 'JuChuang', 'JuanDai', 'JueLeng', 'JueNi', 'JueQi', 'JueXinTong', 'JueYin')); break;
+                case 11:
+                    makeoption(second, new Array('KeChuan', 'KeNi', 'KeSou', 'KeTuo', 'KeXie', 'KeGan', 'KeLi', 'KeRe', 'KeWu', 'KongJu', 'KongWei', 'KouChou', 'KouChuang', 'KouDan', 'KouGan', 'KouGan', 'KouJin', 'KouKe', 'KouKu', 'KouMi', 'KouMianWaiXie', 'KouYanWaiXie', 'KouZao', 'KuangLuan', 'KuangWang', 'KuangYu', 'KuangZao', 'KuiLan', 'KuiYang', 'KuiMen', 'KunDu', 'KunFa', 'KunJuan', 'KunRuo', 'KunZhong')); break;
+                case 12:
+                    makeoption(second, new Array('Lai', 'LaiBing', 'LaiChuang', 'LaiFeng', 'LanYan', 'LanTui', 'LanXian', 'LanYan', 'LaoBing', 'LaoFeng', 'LaoFu', 'LaoHuang', 'LaoJuan', 'LaoLeng', 'LaoLin', 'LaoLong', 'LaoNve', 'LaoQi', 'LaoRe', 'LaoShang', 'LaoShangGuoDu', 'LaoShou', 'LaoSou', 'LaoSun', 'LaoXu', 'LaoYi', 'LaoZhai', 'LaoRen', 'LeiTouFeng', 'LeiFa', 'LeiKun', 'LeiRuo', 'LeiShou', 'LeiTong', 'LeiZhongFeng', 'LengBi', 'LengBing', 'LengChuang', 'LengHan', 'LengHua', 'LengLao', 'LengLaoLi', 'LengLei', 'LengLi', 'LengLin', 'LengLou', 'LengLou', 'LengQi', 'LengQiGong', 'LengQiGongQiFu', 'LengQiGongXin', 'LengQiGongXinFu', 'LengQiShangGong', 'LengQiTong', 'LengReBuHe', 'LengReLei', 'LengReLi', 'LengShan', 'LengSou', 'LengTong', 'LengXiao', 'LengXie', 'LengZhang', 'LiJi', 'LiJiHouZhong', 'LiXu', 'LiJie', 'LiJieFeng', 'LiFeng', 'LiYangFeng', 'Li', 'LiKe', 'LianChuang', 'LiangXieXuZhang', 'LiangXieZhang', 'LiangXieZhangMan', 'LinBi', 'LinBing', 'LinLi', 'LinLi', 'LinSe', 'LinTong', 'LinZheng', 'LinZhuo', 'LiuYin', 'LiuLei', 'LiuNong', 'LiuXian', 'LiuZhu', 'LiuZhuJiaoXi', 'LouGuChuang', 'Lou', 'LouChuang', 'LouChuang', 'LouJing', 'LouJing', 'LouXia', 'LouXie', 'LuoLi')); break;
+                case 13:
+                    makeoption(second, new Array('MaBi', 'MaDouChuang', 'MaFeng', 'MaMu', 'MaZhen', 'MaZheng', 'MaDao', 'MaiBuChenShi', 'MaiChen', 'MaiChenChi', 'MaiChenFu', 'MaiChenHua', 'MaiChenHuan', 'MaiChenJin', 'MaiChenRuShu', 'MaiChenSe', 'MaiChenShi', 'MaiChenShiDa', 'MaiChenShu', 'MaiChenWei', 'MaiChenXi', 'MaiChenXiShu', 'MaiChenXian', 'MaiChenXianJinXi', 'MaiChenXianXiChi', 'MaiChenZhi', 'MaiChenZhong', 'MaiChi', 'MaiChiHuan', 'MaiChiSe', 'MaiChiXi', 'MaiDa', 'MaiDaHuaJi', 'MaiDaWuLi', 'MaiDuan', 'MaiFu', 'MaiFuXuXi', 'MaiFu', 'MaiFuDa', 'MaiFuHong', 'MaiFuHua', 'MaiFuHuan', 'MaiFuJin', 'MaiFuRuan', 'MaiFuRuo', 'MaiFuSe', 'MaiFuShu', 'MaiFuXiSe', 'MaiFuXiShu', 'MaiFuXian', 'MaiFuXianShu', 'MaiFuXuRuan', 'MaiHong', 'MaiHongDa', 'MaiHongDaJinJi', 'MaiHongDaWuLi', 'MaiHongFu', 'MaiHongHua', 'MaiHongSheng', 'MaiHongShi', 'MaiHongShu', 'MaiHongShuXianShi', 'MaiHongXian', 'MaiHongXianShiShu', 'MaiHongChang', 'MaiHua', 'MaiHuaDa', 'MaiHuaShi', 'MaiHuaShu', 'MaiHuaShuHong', 'MaiHuan', 'MaiHuanSe', 'MaiJi', 'MaiJi', 'MaiJin', 'MaiJinFu', 'MaiJinSe', 'MaiJinShu', 'MaiJinXi', 'MaiJuJing', 'MaiJuYun', 'MaiJue', 'MaiManDa', 'MaiRuGou', 'MaiRuFuShu', 'MaiRuSe', 'MaiRuShu', 'MaiRuan', 'MaiRuanSe', 'MaiRuanShu', 'MaiRuo', 'MaiSe', 'MaiSeHong', 'MaiSeShu', 'MaiSeXi', 'MaiShangShengXiaXu', 'MaiSheng', 'MaiShi', 'MaiShu', 'MaiShuHong', 'MaiShuHua', 'MaiShuRuXianWeiSe', 'MaiShuRuoXian', 'MaiShuSe', 'MaiShuSeDa', 'MaiShuYouLi', 'MaiWei', 'MaiWeiHuan', 'MaiWeiRuo', 'MaiWeiSe', 'MaiWeiShu', 'MaiWeiXi', 'MaiWeiXian', 'MaiWuLi', 'MaiXi', 'MaiXiRuo', 'MaiXiSe', 'MaiXiShu', 'MaiXiXiao', 'MaiXian', 'MaiXianChenSe', 'MaiXianChi', 'MaiXianCu', 'MaiXianDuan', 'MaiXianFu', 'MaiXianHua', 'MaiXianHuanSe', 'MaiXianJin', 'MaiXianJinShu', 'MaiXianSe', 'MaiXianShi', 'MaiXianShu', 'MaiXianXi', 'MaiXianXu', 'MaiXianXuShu', 'MaiXianChang', 'MaiXiao', 'MaiXu', 'MaiXuChenShu', 'MaiXuDa', 'MaiXuFu', 'MaiXuFuShu', 'MaiXuHan', 'MaiXuJin', 'MaiXuRuo', 'MaiXuSe', 'MaiXuShu', 'MaiXuWei', 'MaiXuWeiShu', 'MaiXuXi', 'MaiXuXian', 'MaiXuXianXi', 'MaiYingJi', 'MaiYouLi', 'MaiChang', 'MaiZhi', 'MaiZhi', 'MaiZhong', 'ManKou', 'ManMen', 'ManJingFeng', 'ManPiFeng', 'ManXingShiZhen', 'MangChangQi', 'MaoMen', 'MeiXuDuoLuo', 'MeiChuang', 'MeiDu', 'MeiHeQi', 'MeiChuang', 'MenJue', 'MenLuan', 'MenRe', 'MengJiao', 'MengYan', 'MengYi', 'MiMen', 'MianBai', 'MianChi', 'MianChuang', 'MianFeng', 'MianFu', 'MianGou', 'MianHei', 'MianHuang', 'MianMuFuZhong', 'MianMuXuFu', 'MianQing', 'MianRe', 'MianWuYanSe', 'MianZhong', 'MuShe', 'MuHuang', 'MuMing', 'MuXuan')); break;
+                case 14:
+                    makeoption(second, new Array('NaiGan', 'NaiPi', 'NaiXian', 'NanZi', 'NanChan', 'NanKai', 'NangYong', 'NangZhong', 'NaoChong', 'NaoFeng', 'NaoGan', 'NaoJu', 'NaoLou', 'NaoRe', 'NaoTong', 'NeiDiao', 'NeiRe', 'NeiShang', 'NeiShangPiWei', 'NeiSun', 'NeiXu', 'NeiYu', 'NeiZhang', 'NeiZhi', 'NiMan', 'NiXie', 'NiaoXie', 'NiuPiXuan', 'NiuShang', 'NongKeChuang', 'NongShui', 'NongXie', 'NongXieLi', 'NongShe', 'NuRouPanJing', 'Nve', 'NveLi', 'NveMu', 'NvYinKuiYang', 'NvXie')); break;
+                case 15:
+                    makeoption(second, new Array('OuYue', 'OuNi', 'OuTu', 'OuXie')); break;
+                case 16:
+                    makeoption(second, new Array('PanChang', 'PanChangQi', 'PanChangQiTong', 'PaoChuang', 'PengZhang', 'PiFuBuRen', 'PiFuKuZao', 'PiFuWanBi', 'PiFuZaoYang', 'PiShui', 'PiBing', 'PiDan', 'PiDan', 'PiDu', 'PiFeiBuHe', 'PiFeiHanRe', 'PiFeiXuHan', 'PiFeiXuRuo', 'PiFeng', 'PiGan', 'PiKe', 'PiHuo', 'PiJi', 'PiJiPiQi', 'PiKun', 'PiLao', 'PiNve', 'PiQiXu', 'PiRe', 'PiShenFengXu', 'PiShi', 'PiShiRe', 'PiTong', 'PiWeiBing', 'PiWeiBuHe', 'PiWeiLeng', 'PiWeiQi', 'PiWeiQiLeng', 'PiWeiQiZhi', 'PiWeiRe', 'PiWeiShouShi', 'PiWeiXu', 'PiWeiXuFeng', 'PiWeiXuLeng', 'PiWeiXuRe', 'PiWeiYongZhi', 'PiXie', 'PiXie', 'PiXu', 'PiXuLeng', 'PiZangLeng', 'PiZangZhongFeng', 'PiJi', 'PiKuai', 'PiMan', 'PiMen', 'PiPi', 'PiQi', 'PiSai', 'PiZheng', 'PiJi', 'PiJi', 'PiKuai', 'PiQi', 'PiYin', 'PianFeng', 'PianKu', 'PianTouFeng', 'PianTouTong', 'PianZhengTouFeng', 'PianZhengTouTong', 'PianZhui', 'PinZhi', 'PoShangFeng')); break;
+                case 17:
+                    makeoption(second, new Array('QiShan', 'QiChuang', 'QiFeng', 'QiFuFanMen', 'QiFuLengTong', 'QiFuTong', 'QiFuZhangMan', 'QiFuZhangTong', 'QiTong', 'QiXiaLengTong', 'QiXiaZhangMan', 'QiBi', 'QiBuHe', 'QiBuShengJiang', 'QiChong', 'QiChuan', 'QiCiTong', 'QiCu', 'QiCu', 'QiDu', 'QiFa', 'QiGan', 'QiGe', 'QiGong', 'QiGongFuXie', 'QiGongXinFu', 'QiGu', 'QiJi', 'QiJi', 'QiJi', 'QiJie', 'QiJue', 'QiJue', 'QiLao', 'QiLeng', 'QiLi', 'QiLin', 'QiMan', 'QiMen', 'QiMi', 'QiNi', 'QiPi', 'QiSheng', 'QiShi', 'QiSou', 'QiTan', 'QiTong', 'QiTuo', 'QiXu', 'QiXieBuHe', 'QiXieNingZhi', 'QiXieXu', 'QiYe', 'QiYing', 'QiYong', 'QiYu', 'QiYuJue', 'QiZhang', 'QiZhi', 'QiZhi', 'QiZhong', 'QiZhu', 'QingJin', 'QingMang', 'QingTi', 'QuChi', 'QuanChi', 'QueBan', 'QueMu')); break;
+                case 18:
+                    makeoption(second, new Array('RaoQiTong', 'ReBing', 'ReChuang', 'ReDu', 'ReDuFeng', 'ReDuGongYan', 'ReDuLi', 'ReDuQi', 'ReDuShangGong', 'ReDuoHanShao', 'ReFeng', 'ReGan', 'ReJie', 'ReJie', 'ReJue', 'ReKe', 'ReLao', 'ReLei', 'ReLi', 'ReLin', 'ReNve', 'ReQi', 'ReQiShangChong', 'ReRuXieShi', 'ReSheng', 'ReSou', 'ReTan', 'ReTong', 'ReTu', 'ReXian', 'ReXie', 'ReXie', 'ReYan', 'ReYong', 'ReZhang', 'ReZhong', 'RenShen', 'RiBu', 'RongWeiBuHe', 'RongWeiBuZu', 'RongWeiJuXu', 'RouZhi', 'RouFeng', 'RouJing', 'RouCi', 'RouJi', 'RouJi', 'RuJianGuiShen', 'RuXie', 'Rue', 'Rue', 'RuJie', 'RuJieHe', 'RuJu', 'RuPi', 'RuShao', 'RuShiFaDong', 'RuShiBuJin', 'RuShiBuXia', 'RuShiBuXiao', 'RuShiJianShao', 'RuSou', 'RuTong', 'RuXuan', 'RuYan', 'RuYong', 'RuZhiBuXing', 'RuLao')); break;
+                case 19:
+                    makeoption(second, new Array('SaiZhong', 'SanChong', 'SanChongXinTong', 'SanJiaoBuShun', 'SanJiaoKe', 'SanJiaoPiSai', 'SanJiaoRe', 'SanJiaoXu', 'SanJiaoXuZhang', 'SanJiaoYongSheng', 'SaoYang', 'SaoYang', 'SeYuGuoDu', 'SeTong', 'ShaShiLin', 'ShaZhang', 'ShaZhen', 'ShaZheng', 'ShanCuo', 'ShanNa', 'ShanYao', 'ShanJia', 'ShanQi', 'ShanTong', 'ShanTaiXi', 'ShanYi', 'ShangFei', 'ShangFeng', 'ShangGan', 'ShangHan', 'ShangJin', 'ShangLeng', 'ShangPi', 'ShangQi', 'ShangQiFen', 'ShangRe', 'ShangShengLeng', 'ShangShi', 'ShangShi', 'ShangShu', 'ShangSun', 'ShangTaiQi', 'ShangWei', 'ShangZhe', 'ShangZheJinGu', 'ShangChuan', 'ShangGeYongZhi', 'ShangJiaoFengRe', 'ShangJiaoHan', 'ShangJiaoRe', 'ShangJiaoXu', 'ShangJiaoXuHan', 'ShangJiaoXuRe', 'ShangJiaoYongZhi', 'ShangNi', 'ShangQi', 'ShangReXiaHan', 'ShangReXiaLeng', 'ShangShengXiaXu', 'ShangYong', 'ShaoLi', 'ShaoQi', 'ShaoQi', 'ShaoShui', 'ShaoXi', 'ShaoYin', 'ShaoYinBing', 'SheChuXie', 'SheChuang', 'SheDan', 'SheDanHong', 'SheGan', 'SheHong', 'SheHuang', 'SheQiang', 'SheSe', 'SheShangShengChuang', 'SheSuo', 'SheZao', 'SheZhong', 'SheYao', 'ShenHuang', 'ShenLeng', 'ShenRe', 'ShenTiJiQiang', 'ShenTong', 'ShenZhong', 'ShenZhong', 'ShenHun', 'ShenJingXingPiYan', 'ShenJuan', 'ShenBing', 'ShenGan', 'ShenKe', 'ShenHan', 'ShenHuo', 'ShenJi', 'ShenLao', 'ShenNve', 'ShenQi', 'ShenQiBuHe', 'ShenQiXu', 'ShenQiXuLeng', 'ShenRe', 'ShenShui', 'ShenShuiBuZu', 'ShenXiao', 'ShenXie', 'ShenXu', 'ShenXuRe', 'ShenYangXu', 'ShenYinXu', 'ShenYong', 'ShenZangFeng', 'ShenZangFengLeng', 'ShenZangFengXu', 'ShenZangLeng', 'ShenZangShiRe', 'ShenZangXuLeng', 'ShenZangZhongFeng', 'ShengChuang', 'ShengFeng', 'ShengTan', 'ShengYong', 'ShengYa', 'ShengZhong', 'ShiJue', 'ShiZhu', 'ShiJing', 'ShiMian', 'ShiXin', 'ShiXie', 'ShiYin', 'ShiBi', 'ShiChuang', 'ShiDu', 'ShiDuChuang', 'ShiJiaoQi', 'ShiJie', 'ShiLeng', 'ShiLi', 'ShiQi', 'ShiRe', 'ShiReXiaZhu', 'ShiTan', 'ShiWen', 'ShiXie', 'ShiXuan', 'ShiYang', 'ShiZhen', 'ShiShui', 'ShiYong', 'ShiDu', 'ShiJi', 'ShiQi', 'ShiXing', 'ShiYi', 'ShiHuo', 'ShiRe', 'ShiBuShengJi', 'ShiDan', 'ShiDu', 'ShiGan', 'ShiJi', 'ShiLao', 'ShiPi', 'ShiShangPiWei', 'ShiShao', 'ShiShengLeng', 'ShiXian', 'ShiZeOuTu', 'ShiZheng', 'ShiWuBuMing', 'ShiWo', 'ShouLeng', 'ShouZuBuJu', 'ShouZuBuSui', 'ShouZuChouChu', 'ShouZuChuNuo', 'ShouZuFanMen', 'ShouZuJuJi', 'ShouZuJueLeng', 'ShouZuMaBi', 'ShouZuMaMu', 'ShouZuWanMa', 'ShouZuXinRe', 'ShouFeng', 'ShouShi', 'ShouRuo', 'ShuDu', 'ShuNve', 'ShuQi', 'ShuRe', 'ShuShi', 'ShuChuang', 'ShuLou', 'ShuRu', 'ShuiBing', 'ShuiDaoSeTong', 'ShuiDou', 'ShuiDu', 'ShuiGuBuHua', 'ShuiGuLi', 'ShuiGu', 'ShuiLi', 'ShuiQi', 'ShuiQiZhong', 'ShuiShan', 'ShuiXie', 'ShuiXie', 'ShuiYin', 'ShuiZhong', 'ShuiMianBuAn', 'SiLvGuoDu', 'SiZhiBuLi', 'SiZhiBuRen', 'SiZhiBuShou', 'SiZhiChenZhong', 'SiZhiChouChe', 'SiZhiFanRe', 'SiZhiFuZhong', 'SiZhiHanRe', 'SiZhiJueNi', 'SiZhiRe', 'SiZhiRuanRuo', 'SiZhiTong', 'SiZhiYongMen', 'SiZhiZhongMan', 'SongJi', 'SouXie', 'SuShiBuXiao', 'SunXie')); break;
+                case 20:
+                    makeoption(second, new Array('TaiDongBuAn', 'TaiDu', 'TaiFeng', 'TaiHan', 'TaiJing', 'TaiLou', 'TaiQi', 'TaiQiBuAn', 'TaiQiBuHe', 'TaiQian', 'TaiQianZhuZheng', 'TaiRe', 'TaiShangBiXin', 'TaiSiFuZhong', 'TaiTong', 'TaiWeiBuChang', 'TaiWeiZao', 'TaiYiBuXia', 'TaiZao', 'TaiBai', 'TaiBao', 'TaiHua', 'TaiHuang', 'TaiShao', 'TanHuanFeng', 'TanHuan', 'TanHuanFeng', 'TanChu', 'TanChuan', 'TanDu', 'TanGe', 'TanHe', 'TanHuo', 'TanJi', 'TanJue', 'TanMi', 'TanMing', 'TanNi', 'TanNve', 'TanPi', 'TanQi', 'TanQiBuLi', 'TanQiBuQing', 'TanRe', 'TanShi', 'TanShi', 'TanSou', 'TanTi', 'TanTuo', 'TanXian', 'TanXianBuLi', 'TanYin', 'TanYong', 'TanZheng', 'TanZhi', 'TanZhongYouXie', 'TanZu', 'TangXie', 'TangShang', 'TengJuan', 'TengTong', 'TiJiao', 'TiKu', 'TiChan', 'TiJuan', 'TiRe', 'TiShou', 'TiXu', 'TianDiao', 'TianPaoChuang', 'TianXiao', 'TianXing', 'TingShi', 'TingYin', 'TingEr', 'TongBi', 'TongFeng', 'TongJing', 'TongJu', 'TongMen', 'TouChuang', 'TouFaZuoSui', 'TouFeng', 'TouHan', 'TouHun', 'TouMen', 'TouMianChuang', 'TouMianFeng', 'TouMianFuZhong', 'TouMuBuLi', 'TouMuHunMen', 'TouMuHunTong', 'TouMuHunZhong', 'TouRe', 'TouTong', 'TouXuan', 'TouYun', 'TouYunMuXuan', 'TouZhang', 'TouZhong', 'TuChuang', 'TuBaiMo', 'TuHui', 'TuLi', 'TuLi', 'TuMo', 'TuNi', 'TuNv', 'TuQingShui', 'TuRu', 'TuShi', 'TuSuan', 'TuTan', 'TuXianMo', 'TuXie', 'TuXie', 'TuXie', 'TuiTong', 'TuiXiTong', 'TuiXiWuLi', 'TuiXiZhongTong', 'TuiZhong', 'TunSuan', 'TunYong', 'TuoFa', 'TuoGang', 'TuoJiu', 'TuoJu', 'DuoYe', 'TuoChouNian', 'TuoNongXie', 'TuoXie')); break;
+                case 21:
+                    makeoption(second, new Array('None'));
+                    break;
+                case 22:
+                    makeoption(second, new Array('None'));
+                    break;
+                case 23:
+                    makeoption(second, new Array('WaiRe', 'WaiZhang', 'WaiZhi', 'WanDouChuang', 'WanBi', 'WanChuang', 'WanLian', 'WanMa', 'WanXuan', 'WanZhe', 'WangJian', 'WangYu', 'WeiHuang', 'WeiBi', 'WeiJue', 'WeiRuo', 'WeiZheng', 'WeiQiXu', 'WeiRi', 'WeiFeng', 'WeiHuo', 'WeiLeng', 'WeiNi', 'WeiNve', 'WeiQi', 'WeiQiBuHe', 'WeiQiNi', 'WeiQiTong', 'WeiQiXu', 'WeiQiXuHan', 'WeiQiXuLeng', 'WeiRe', 'WeiShiRe', 'WeiTong', 'WeiXinTong', 'WeiXu', 'WeiXuHan', 'WeiXuLeng', 'WeiXuRe', 'WeiYong', 'WeiZhang', 'WeiZhongBuHe', 'WenBing', 'WenDu', 'WenNve', 'WenRe', 'WenReBing', 'WenYi', 'WenZhuang', 'WenYi', 'WuFengNeiZhang', 'WuGuGan', 'WuHan', 'WuLi', 'WuRe', 'WuRu', 'WuShen', 'WuWei', 'WuZi', 'WuDan', 'WuFa', 'WuGan', 'WuGeQi', 'WuGu', 'WuLao', 'WuLaoQiShang', 'WuLin', 'WuSeLi', 'WuXian', 'WuYe', 'WuZangJiRe', 'WuZheng', 'WuZhi')); break;
+                case 24:
+                    makeoption(second, new Array('XiBi', 'XiJi', 'XiLeng', 'XiRuan', 'XiTong', 'XiGuanXingLiuChan', 'XiaGan', 'XiaGanChuang', 'XiaJiaoLeng', 'XiaJiaoRe', 'XiaJiaoXuLeng', 'XiaJiaoXuShang', 'XiaLi', 'XiaLi', 'XiaLiBaiNong', 'XiaLiQingShui', 'XiaXie', 'XiaYuanJiuLeng', 'XiaYuanXu', 'XiaZhong', 'XiaZhuYaoJiao', 'XianHanHouRe', 'XianChao', 'XianDu', 'XianSou', 'XianTuo', 'XianYong', 'Xian', 'XiangBeiJuJi', 'XiangQiang', 'XiangXi', 'XiangZhong', 'XiaoKe', 'XiaoShen', 'XiaoShou', 'XiaoZhong', 'XiaoBianBuJin', 'XiaoBianBuLi', 'XiaoBianChi', 'XiaoBianChiHuang', 'XiaoBianChiZhuo', 'XiaoBianDuanChi', 'XiaoBianDuanShao', 'XiaoBianHuaShu', 'XiaoBianHuang', 'XiaoBianLin', 'XiaoBianLinLi', 'XiaoBianLinSe', 'XiaoBianLinTong', 'XiaoBianQingBai', 'XiaoBianQingChang', 'XiaoBianSe', 'XiaoBianSeTong', 'XiaoBianShao', 'XiaoBianShu', 'XiaoBianTong', 'XiaoBianZiLi', 'XiaoChan', 'XiaoChangQi', 'XiaoChangShanQi', 'XiaoChangShiRe', 'XiaoChangTong', 'XiaoChangXuLeng', 'XiaoChangYongZhi', 'XiaoEr', 'XiaoFuJuJi', 'XiaoFuLengTong', 'XiaoFuTong', 'XiaoFuZhangJi', 'XiaoFuZhangMan', 'XiaoFuZhangTong', 'XiaoChuan', 'XiaoHou', 'XieShi', 'XieQi', 'XieRe', 'XieShi', 'XieLeiTong', 'XieLeiXuZhang', 'XieLeiZhangMan', 'XieLeiZhangTong', 'XieTong', 'XieXiaJieKuai', 'XieZhang', 'XieRe', 'XieLi', 'XieXie', 'XieLi', 'XinBi', 'XinFan', 'XinFeiRe', 'XinFeiZhongFeng', 'XinFeng', 'XinFuLeng', 'XinFuLengTong', 'XinFuManMen', 'XinFuQi', 'XinFuQiTong', 'XinFuRe', 'XinFuTong', 'XinFuXuLeng', 'XinFuZhang', 'XinFuZhangTong', 'XinGeBuLi', 'XinGeManMen', 'XinKe', 'XinHuang', 'XinHuo', 'XinHuoShangYan', 'XinJi', 'XinJiaoTong', 'XinJingBing', 'XinJingXieRe', 'XinJing', 'XinKuang', 'XinLao', 'XinLaoRe', 'XinLuan', 'XinMen', 'XinPiRe', 'XinPiTong', 'XinPiXu', 'XinPiYongZhi', 'XinQiTong', 'XinQiXu', 'XinQiao', 'XinRe', 'XinShan', 'XinShenBuNing', 'XinShenBuJiao', 'XinShenBuZu', 'XinShenQiXu', 'XinShenXu', 'XinSong', 'XinTiao', 'XinTong', 'XinWeiQiTong', 'XinWeiTong', 'XinXiaJianPi', 'XinXiaTingYin', 'XinXiaXuPi', 'XinXieTong', 'XinXiongBuLi', 'XinXiongManMen', 'XinXiongQiYong', 'XinXiongTong', 'XinXu', 'XinXuHan', 'XinXueXu', 'XinZangFengRe', 'XinZangFengXie', 'XinZangFengXu', 'XinZangShiRe', 'XinZangZhongFeng', 'XinZao', 'XinZheng', 'XinKaiBuHe', 'XinMenBuHe', 'XinXian', 'XinChi', 'XinRe', 'XinTong', 'XinZhong', 'XingBuJianNan', 'XiongBeiJuJi', 'XiongBi', 'XiongFuManMen', 'XiongFuZhangTong', 'XiongGeBuLi', 'XiongGeHanRe', 'XiongGeManMen', 'XiongGeTong', 'XiongJi', 'XiongMan', 'XiongMen', 'XiongPi', 'XiongTong', 'XiongXieBuLi', 'XiongXieManMen', 'XiongZhongQiMan', 'XiuXiLi', 'XiuXiQiLi', 'XiuMing', 'XuChuan', 'XuFa', 'XuFan', 'XuFeng', 'XuFu', 'XuHan', 'XuHan', 'XuHua', 'XuHuo', 'XuHuoShangYan', 'XuJi', 'XuJi', 'XuJie', 'XuKe', 'XuKun', 'XuLao', 'XuLei', 'XuLeng', 'XuLi', 'XuMan', 'XuMing', 'XuPi', 'XuQi', 'XuQie', 'XuRe', 'XuRuo', 'XuSun', 'XuTuo', 'XuXie', 'XuZao', 'XuZheng', 'XuZhong', 'XuXi', 'XuXie', 'XuanPi', 'XuanPiQi', 'XuanQi', 'XuanYin', 'XuanYong', 'XuanErChuang', 'Xuan', 'XuanChuang', 'XuanJie', 'XuanMao', 'XuanYun', 'XieBeng', 'XieBi', 'XieBi', 'XieCi', 'XieCiTong', 'XieFen', 'XieFeng', 'XieFengChuang', 'XieFengGongZhu', 'XieFengLaoQi', 'XieGu', 'XieGuanTongRen', 'XieHaiLeng', 'XieHaiXuLeng', 'XieHan', 'XieJi', 'XieJia', 'XieJue', 'XieKe', 'XieKu', 'XieKuai', 'XieLao', 'XieLi', 'XieLin', 'XieMaiBuTong', 'XiePi', 'XiePi', 'XieQi', 'XieQiBuHe', 'XieQiGongXin', 'XieQiGongZhu', 'XieQiShangGong', 'XieQiTong', 'XieQiXu', 'XieQiXuLeng', 'XieRe', 'XieShang', 'XieSheng', 'XieTong', 'XieTuo', 'XieWangXing', 'XieXie', 'XieXu', 'XieYi', 'XieYu', 'XieYu', 'XieYun', 'XieZao', 'XieZheng', 'XieZhi', 'XieZhi')); break;
+                case 25:
+                    makeoption(second, new Array('YaFengChuXie', 'YaGan', 'YaGuanJinJi', 'YaTong', 'YaXuan', 'YaYinZhongTong', 'YanYuBuLi', 'YanYuCuoLuan', 'YanAn', 'YanBiBuKai', 'YanChi', 'YanChiLan', 'YanDan', 'YanFeng', 'YanGan', 'YanGan', 'YanHei', 'YanHua', 'YanHun', 'YanJi', 'YanJianZhong', 'YanMuXieShi', 'YanRe', 'YanSe', 'YanTong', 'YanYang', 'YanYi', 'YanYun', 'YanZhong', 'YanGan', 'YanHouBuLi', 'YanHouTong', 'YanHouYongSai', 'YanHouZhongTong', 'YanZao', 'YanKouChuang', 'YanWoChuang', 'YangDu', 'YangJing', 'YangJue', 'YangQiXu', 'YangSheng', 'YangShiBuJu', 'YangWei', 'YangXu', 'YangZheng', 'YangMeiJieDu', 'YangTong', 'YaoBeiJuJi', 'YaoBeiQiangZhi', 'YaoBeiTong', 'YaoFuLengTong', 'YaoFuTong', 'YaoJiQiang', 'YaoJiTong', 'YaoJiaoChenZhong', 'YaoJiaoLengBi', 'YaoJiaoTengBi', 'YaoJiaoWuLi', 'YaoKuaTong', 'YaoLeng', 'YaoQiTong', 'YaoSuan', 'YaoTong', 'YaoTuiChenZhong', 'YaoTuiHuanRuo', 'YaoTuiSuanRuan', 'YaoTuiSuanTong', 'YaoTuiTong', 'YaoTuiWuLi', 'YaoXiChenZhong', 'YaoXiLengTong', 'YaoXiSuanRuan', 'YaoXiSuanTong', 'YaoXiTengZhong', 'YaoXiTong', 'YaoXiWuLi', 'YaoZhong', 'YaoYa', 'YaoDu', 'YeGe', 'YeMen', 'YeSai', 'YeDuoXiaoBian', 'YeTi', 'YiQieFeng', 'YiQieQi', 'YiCu', 'YiQi', 'YiJing', 'YiNi', 'YiNiao', 'YiXie', 'YiXi', 'YiYu', 'YiLi', 'YiQi', 'YiZhen', 'YiYin', 'YiMo', 'YiZhang', 'YinZhi', 'YinChuang', 'YinDu', 'YinHan', 'YinHan', 'YinHuo', 'YinJing', 'YinJu', 'YinJue', 'YinNangShiYang', 'YinNangZhong', 'YinNve', 'YinShan', 'YinSheng', 'YinShiChuang', 'YinTuo', 'YinWei', 'YinXian', 'YinXu', 'YinYangBuHe', 'YinYangPi', 'YinYang', 'YinZheng', 'YinZhong', 'YinYin', 'YinJiuGuoDu', 'YinShiBuHua', 'YinShiBuJie', 'YinShiDuWu', 'YinShiGuoDu', 'YinShiJinTui', 'YinShiWuWei', 'YinSe', 'YinZhen', 'YingFengLiuLei', 'YingWeiBuTong', 'YingWeiBuZu', 'YingLiu', 'YingQi', 'Yong', 'YongChuang', 'YongDu', 'YongJie', 'YongJu', 'YongYang', 'YongZhong', 'YongMen', 'YongRe', 'YongSai', 'YongSheng', 'YongZhi', 'YouChou', 'YouHui', 'YouFeng', 'YouQi', 'YouHan', 'YouHan', 'YouRe', 'YouSuoXia', 'YouTan', 'YouXieTong', 'YuRou', 'YuXie', 'YuDuBuSan', 'YuReBuJie', 'YuKou', 'YuKouChuang', 'YuSe', 'YuJi', 'YuJie', 'YuMao', 'YuJue', 'YuOu', 'YuSi', 'YuTu', 'YuanQiXu', 'YuanQiXuLeng', 'YuanYangXu', 'YuanZangQiXu', 'YuanZangXu', 'YuanZangXuLeng', 'YueJingBuTiao', 'YueJingBuLi', 'YueShuiBuDuan', 'YunJue', 'YunYi')); break;
+                case 26:
+                    makeoption(second, new Array('ZangDu', 'ZangFuBuHe', 'ZangFuQiZhi', 'ZangFuTong', 'ZangFuXuHua', 'ZangFuXuLeng', 'ZangFuYongZhi', 'ZangLeng', 'ZangQiXu', 'ZangRe', 'ZangXu', 'ZaoXie', 'ZaoHuo', 'ZaoKe', 'ZaoRe', 'ZaoTan', 'ZaoYang', 'ZaoMen', 'ZeiFeng', 'ZengHan', 'ZhaSai', 'ZhanYu', 'ZhangChuang', 'ZhangJi', 'ZhangMan', 'ZhangMen', 'ZhangTong', 'ZhangYi', 'ZhangDu', 'ZhangLi', 'ZhangNve', 'ZhangQi', 'ZhangYi', 'ZhenQiXu', 'ZhenYangXu', 'ZhenYinXu', 'ZhenYuanXu', 'Zhen', 'ZhenChuang', 'ZhenDu', 'ZhengChong', 'ZhengSong', 'ZhengRe', 'ZhengJia', 'ZhengJie', 'ZhengPi', 'ZhengPi', 'ZhiMan', 'ZhiYin', 'ZhiTiChenZhong', 'ZhiYiBuDing', 'ZhiChuang', 'ZhiJi', 'ZhiLou', 'ZhiLou', 'ZhiYong', 'ZhiXia', 'ZhiZong', 'ZhongDu', 'Zhonge', 'ZhongFeng', 'ZhongGu', 'ZhongHan', 'ZhongJiaoBuHe', 'ZhongJiaoRe', 'ZhongJiaoXu', 'ZhongJiu', 'ZhongLeng', 'ZhongMan', 'ZhongQi', 'ZhongQiXu', 'ZhongShi', 'ZhongShu', 'ZhongTan', 'ZhongWanPiMen', 'ZhongYe', 'ZhongDu', 'ZhongMan', 'ZhongSai', 'ZhongTong', 'ZhongYang', 'ZhongYang', 'ZhongYing', 'ZhongZhang', 'ZhongShe', 'ZhouBi', 'ZhuChong', 'ZhuChuang', 'ZhuDan', 'ZhuDu', 'ZhuLin', 'ZhuXu', 'ZhuXia', 'ZhuMen', 'ZhuanJin', 'ZhuanPao', 'ZhuangRe', 'ZiFan', 'ZiGongXuLeng', 'ZiLin', 'ZiSou', 'ZiXian', 'ZiXuan', 'ZiZhong', 'ZiBaiDianFeng', 'ZiDianFeng', 'ZiHan', 'ZiLi', 'ZiLan', 'ZouMaGan', 'ZouMaYaGan', 'ZouZhu', 'ZouZhuTengTong', 'ZuLeng', 'ZuShaoYinNve', 'ZuXinTong', 'ZuZhongFeng', 'ZuBing', 'ZuoBanChuang', 'ZuoMaYong', 'ZuoWoBuAn')); break;
+                default:
+                    break;
+            }
+        }
+
+        function format(str) {
+            var blank = ' ';
+            for(var i = 0; i<(50-str.length); i++){
+                str = str + blank;
+            }
+            return str;       
+        }
+        
+        function printprescription(count){
+            var str = "Reference Prescription:\n"
+            var p = prescription.split(',');
+
+            var res = str;
+            for(var i = 0; i<count; i++)
+                if(i % 2 == 0)
+                    res += "\t\t" + format(p[i]) + '\t';
+                else
+                    res += format(p[i]) + '\n';
+            getEle('output_herb_id').value = res;
+        }
+
+        function herbCountChange() {
+            var count_object = document.getElementById("herbcount");
+            var count_text = count_object.options[count_object.selectedIndex].text;
+            // if(count_text === "Number")
+            //     getEle('output_herb_id').value = "Please select the number of herbs after submit symptoms.";
+            var count = parseInt(count_text)
+            printprescription(count);
+        }
+
+    </script>
+</body>
+
+</html>
