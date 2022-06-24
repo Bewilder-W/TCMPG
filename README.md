@@ -6,7 +6,7 @@
 
 In this work, we used Traditional Chinese Medicine Prescription Generation Graph Auto-Encoder(TCMPG-GAE) to discover the associations between the entire prescriptions and symptoms, and generate prescriptions in an end-to-end manner.
 
-- Under the "data" folder, there are all the data involved in our model. 
+- Under the "data.zip" file, there are all the data involved in our model. In your development environment, you should unzip this file first.
 
 - Under the `Experiment result` folder, the `/Case Studies.xlsx` contains the symptom sets of 60 test prescriptions and the results in K = (5, 10, 20). The `/Figures` folder contains the experiment results about Precision, Recall, HR, and NDCG under 5-fold cross-validation.
 
